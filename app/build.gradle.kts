@@ -109,8 +109,6 @@ dependencies {
     implementation(libs.androidx.window)
     implementation(libs.androidx.window.core)
 
-    implementation(libs.accompanist.adaptive)
-
     implementation(libs.coil.kt.compose)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
