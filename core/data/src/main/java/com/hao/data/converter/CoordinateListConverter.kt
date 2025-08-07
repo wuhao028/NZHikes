@@ -1,4 +1,4 @@
-package com.hao.nzhikes.data.converter
+package com.hao.data.data.converter
 
 import androidx.room.TypeConverter
 import com.squareup.moshi.Moshi

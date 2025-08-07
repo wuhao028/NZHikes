@@ -1,10 +1,10 @@
-package com.hao.nzhikes.data.model
+package com.hao.data.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.hao.nzhikes.data.converter.CoordinateListConverter
-import com.hao.nzhikes.data.converter.StringListConverter
+import com.hao.data.data.converter.CoordinateListConverter
+import com.hao.data.data.converter.StringListConverter
 
 /**
  * Data class representing a hiking track

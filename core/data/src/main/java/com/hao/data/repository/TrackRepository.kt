@@ -1,9 +1,9 @@
-package com.hao.nzhikes.data.repository
+package com.hao.data.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.hao.nzhikes.data.local.TrackDatabase
-import com.hao.nzhikes.data.model.Track
+import com.hao.data.data.local.TrackDatabase
+import com.hao.data.data.model.Track
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

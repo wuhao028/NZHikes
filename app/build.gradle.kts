@@ -43,7 +43,12 @@ android {
 }
 
 dependencies {
-    // Core Android
+    // Feature modules
+    implementation(project(":feature:explore"))
+    implementation(project(":feature:trips"))
+    implementation(project(":feature:me"))
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)

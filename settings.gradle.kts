@@ -21,8 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "NZHikes"
 include(":app")
-include(":data")
-include(":ui")
-include(":explore")
-include(":trips")
-include(":me")
+include(":core:data")
+include(":core:ui")
+include(":feature:explore")
+include(":feature:trips")
+include(":feature:me")
