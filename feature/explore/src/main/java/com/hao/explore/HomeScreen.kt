@@ -1,34 +1,25 @@
 package com.hao.nzhikes.explore
 
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsWalk
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,10 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hao.data.data.model.Track
+import com.hao.explore.R
 
 @Composable
 private fun TracksList(tracks: List<Track>, listState: LazyListState) {
@@ -150,7 +143,11 @@ fun HomeScreen(
 
     val tabs = listOf("Tracks", "Campsite", "Hut")
     val icons =
-        listOf(Icons.Default.DirectionsWalk, Icons.Default.LocalFireDepartment, Icons.Default.Home)
+        listOf(
+            painterResource(R.drawable.ic_hiking),
+            painterResource(R.drawable.ic_camping),
+            painterResource(R.drawable.ic_hut)
+        )
     val listState = rememberLazyListState()
     val tracksListState = rememberLazyListState()
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -168,7 +165,7 @@ fun HomeScreen(
     )
 
     val iconSize by animateDpAsState(
-        targetValue = if (showIcons) 24.dp else 0.dp,
+        targetValue = if (showIcons) 48.dp else 0.dp,
         animationSpec = tween(durationMillis = 300),
         label = "iconSize"
     )
@@ -185,8 +182,8 @@ fun HomeScreen(
                     onClick = { selectedTabIndex = index },
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = icons[index],
+                        Image(
+                            painter = icons[index],
                             contentDescription = title,
                             modifier = Modifier
                                 .size(iconSize)
