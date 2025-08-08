@@ -1,14 +1,14 @@
 package com.hao.nzhikes.explore
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,10 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,15 +32,97 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hao.data.data.model.Track
 import com.hao.explore.R
+
+@Composable
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    val tabs = listOf("Tracks", "Campsite", "Hut")
+    val icons =
+        listOf(
+            painterResource(R.drawable.ic_hiking),
+            painterResource(R.drawable.ic_camping),
+            painterResource(R.drawable.ic_hut)
+        )
+    val listState = rememberLazyListState()
+    var selectedTabIndex by remember { mutableStateOf(0) }
+
+    val scrollY by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex * 200 +
+                    listState.firstVisibleItemScrollOffset
+        }
+    }
+    val scrollThreshold = 200f
+
+    val animationProgress = remember {
+        derivedStateOf {
+            val progress = (scrollY / scrollThreshold).coerceIn(0f, 1f)
+            progress
+        }
+    }
+
+    val iconSize by animateDpAsState(
+        targetValue = (60 * (1f - animationProgress.value)).dp,
+        label = "iconSize"
+    )
+
+    val tabContainerHeight by animateDpAsState(
+        targetValue = 80.dp - (32.dp * animationProgress.value),
+        label = "tabContainerHeight"
+    )
+
+    Column {
+        Spacer(modifier = Modifier.height(24.dp))
+        SearchBar()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(tabContainerHeight),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                        .clickable { selectedTabIndex = index }
+                ) {
+                    Image(
+                        painter = icons[index],
+                        contentDescription = title,
+                        modifier = Modifier
+                            .size(iconSize),
+                        colorFilter = if (selectedTabIndex == index) androidx.compose.ui.graphics.ColorFilter.tint(
+                            MaterialTheme.colorScheme.primary
+                        ) else null
+                    )
+                    Text(
+                        text = title,
+                        color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+        }
+        when (selectedTabIndex) {
+            0 -> TracksList(tracks = uiState.tracks, listState)
+            1 -> CampsitesList(campsites = uiState.campsites)
+            2 -> HutsList(huts = uiState.huts)
+        }
+    }
+}
 
 @Composable
 private fun TracksList(tracks: List<Track>, listState: LazyListState) {
@@ -131,98 +210,6 @@ private fun HutItem(hut: Hut) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text("${hut.beds} beds • ${hut.facilities.joinToString(", ")}")
-        }
-    }
-}
-
-@Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    val tabs = listOf("Tracks", "Campsite", "Hut")
-    val icons =
-        listOf(
-            painterResource(R.drawable.ic_hiking),
-            painterResource(R.drawable.ic_camping),
-            painterResource(R.drawable.ic_hut)
-        )
-    val listState = rememberLazyListState()
-    val tracksListState = rememberLazyListState()
-    var selectedTabIndex by remember { mutableStateOf(0) }
-
-    val showIcons by remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset < 10
-        }
-    }
-
-    val iconAlpha by animateFloatAsState(
-        targetValue = if (showIcons) 1f else 0f,
-        animationSpec = tween(durationMillis = 300),
-        label = "iconAlpha"
-    )
-
-    val iconSize by animateDpAsState(
-        targetValue = if (showIcons) 64.dp else 0.dp,
-        animationSpec = tween(durationMillis = 300),
-        label = "iconSize"
-    )
-
-    Column {
-        Spacer(modifier = Modifier.height(24.dp))
-        SearchBar()
-        TabRow(
-            selectedTabIndex = selectedTabIndex,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = icons[index],
-                            contentDescription = title,
-                            modifier = Modifier
-                                .size(iconSize)
-                                .alpha(iconAlpha)
-                        )
-                        Text(text = title)
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Tab 内容
-        when (selectedTabIndex) {
-            0 -> TracksList(tracks = uiState.tracks, listState)
-            1 -> CampsitesList(campsites = uiState.campsites)
-            2 -> HutsList(huts = uiState.huts)
-        }
-
-
-        // 内容区
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(30) { index ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .height(100.dp)
-                        .background(Color.LightGray, shape = RoundedCornerShape(12.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Item $index", fontSize = 20.sp)
-                }
-            }
         }
     }
 }
