@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hao.data.data.model.Track
+import com.hao.explore.HikingHomePage
 import com.hao.explore.R
 
 @Composable
@@ -114,7 +115,7 @@ fun HomeScreen(
             }
         }
         when (selectedTabIndex) {
-            0 -> TracksList(tracks = uiState.tracks, listState)
+            0 -> HikingHomePage(listState)
             1 -> CampsitesList(campsites = uiState.campsites)
             2 -> HutsList(huts = uiState.huts)
         }
