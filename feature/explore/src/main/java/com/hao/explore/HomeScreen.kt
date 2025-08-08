@@ -165,12 +165,13 @@ fun HomeScreen(
     )
 
     val iconSize by animateDpAsState(
-        targetValue = if (showIcons) 48.dp else 0.dp,
+        targetValue = if (showIcons) 64.dp else 0.dp,
         animationSpec = tween(durationMillis = 300),
         label = "iconSize"
     )
 
     Column {
+        Spacer(modifier = Modifier.height(24.dp))
         SearchBar()
         TabRow(
             selectedTabIndex = selectedTabIndex,
