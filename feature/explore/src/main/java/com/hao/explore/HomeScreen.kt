@@ -72,12 +72,12 @@ fun HomeScreen(
     }
 
     val iconSize by animateDpAsState(
-        targetValue = (60 * (1f - animationProgress.value)).dp,
+        targetValue = (80 * (1f - animationProgress.value)).dp,
         label = "iconSize"
     )
 
     val tabContainerHeight by animateDpAsState(
-        targetValue = 80.dp - (32.dp * animationProgress.value),
+        targetValue = 120.dp - (80.dp * animationProgress.value),
         label = "tabContainerHeight"
     )
 
@@ -103,14 +103,11 @@ fun HomeScreen(
                         painter = icons[index],
                         contentDescription = title,
                         modifier = Modifier
-                            .size(iconSize),
-                        colorFilter = if (selectedTabIndex == index) androidx.compose.ui.graphics.ColorFilter.tint(
-                            MaterialTheme.colorScheme.primary
-                        ) else null
+                            .size(iconSize)
                     )
                     Text(
                         text = title,
-                        color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        color = if (selectedTabIndex == index) Color.Black else MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
