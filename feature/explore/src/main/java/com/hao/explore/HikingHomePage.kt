@@ -187,9 +187,9 @@ fun HikeCardVertical(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("难度: ${hike.difficulty}", style = MaterialTheme.typography.bodySmall)
-                Text("距离: ${hike.distanceKm} km", style = MaterialTheme.typography.bodySmall)
-                Text("时间: ${hike.duration}", style = MaterialTheme.typography.bodySmall)
+                Text("Difficulty: ${hike.difficulty}", style = MaterialTheme.typography.bodySmall)
+                Text("Distance: ${hike.distanceKm} km", style = MaterialTheme.typography.bodySmall)
+                Text("Duration: ${hike.duration}", style = MaterialTheme.typography.bodySmall)
             }
         }
     }
