@@ -1,10 +1,12 @@
 package com.hao.explore
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hao.data.data.model.Track
 import com.hao.data.data.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val trackRepository: TrackRepository
+    private val trackRepository: TrackRepository,
+    @ApplicationContext private val appContext: Context
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -24,6 +27,11 @@ class SearchViewModel @Inject constructor(
     val searchResults: StateFlow<List<Track>> = _searchResults
 
     init {
+        // Ensure local DB has data loaded from assets at least once
+        viewModelScope.launch {
+            runCatching { trackRepository.loadTracksFromAssets(appContext) }
+        }
+
         viewModelScope.launch {
             searchQuery
                 .debounce(300) // Add a debounce to avoid too many queries
