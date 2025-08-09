@@ -1,5 +1,6 @@
 package com.hao.explore
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,10 @@ fun SearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
-                        .clickable { onTrackClick(track.assetId) }
+                        .clickable { 
+                            Log.d("SearchScreen", "Track clicked: ${track.assetId}")
+                            onTrackClick(track.assetId) 
+                        }
                 )
             }
         }

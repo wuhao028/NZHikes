@@ -5,7 +5,7 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    @GET("api/v1/tracks/{assetId}/detail")
+    @GET("v1/tracks/{assetId}/detail")
     suspend fun getTrackDetails(
         @Path("assetId") assetId: String
     ): TrackDetailsResponse
