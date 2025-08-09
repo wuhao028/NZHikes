@@ -4,19 +4,26 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.hao.nzhikes.explore.HomeScreen
+import com.hao.explore.HomeScreen
+import com.hao.me.MeScreen
+import com.hao.trips.TripsScreen
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController
 ) {
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = BottomNavItem.Home.route
     ) {
-        composable("home") {
+        composable(BottomNavItem.Home.route) {
             HomeScreen()
+        }
+        composable(BottomNavItem.Trips.route) {
+            TripsScreen()
+        }
+        composable(BottomNavItem.Me.route) {
+            MeScreen()
         }
     }
 }

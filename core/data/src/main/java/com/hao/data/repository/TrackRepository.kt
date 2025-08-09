@@ -2,7 +2,7 @@ package com.hao.data.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.hao.data.data.local.TrackDatabase
+import com.hao.data.data.local.AppDatabase
 import com.hao.data.data.model.Track
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -16,7 +16,7 @@ import java.io.IOException
 /**
  * Repository for handling track data operations
  */
-class TrackRepository private constructor(private val database: TrackDatabase) {
+class TrackRepository private constructor(private val database: AppDatabase) {
     private val trackDao = database.trackDao()
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -70,7 +70,7 @@ class TrackRepository private constructor(private val database: TrackDatabase) {
         @Volatile
         private var INSTANCE: TrackRepository? = null
 
-        fun getInstance(database: TrackDatabase): TrackRepository {
+        fun getInstance(database: AppDatabase): TrackRepository {
             return INSTANCE ?: synchronized(this) {
                 val instance = TrackRepository(database)
                 INSTANCE = instance

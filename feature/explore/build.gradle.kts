@@ -106,5 +106,6 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(project(":core:data"))
+    implementation(project(":core:ui"))
 
 }
