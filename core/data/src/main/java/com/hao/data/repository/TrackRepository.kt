@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.hao.data.data.local.AppDatabase
 import com.hao.data.data.model.Track
+import com.hao.data.remote.ApiService
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -16,7 +17,10 @@ import java.io.IOException
 /**
  * Repository for handling track data operations
  */
-class TrackRepository private constructor(private val database: AppDatabase) {
+class TrackRepository private constructor(
+    private val database: AppDatabase,
+    private val apiService: ApiService
+) {
     private val trackDao = database.trackDao()
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -64,15 +68,29 @@ class TrackRepository private constructor(private val database: AppDatabase) {
         return trackDao.getTracks(limit)
     }
 
+    fun searchTracks(query: String): Flow<List<Track>> {
+        return trackDao.searchTracks("%${query}%")
+    }
+
+    suspend fun getTrackDetails(assetId: String): Result<com.hao.data.remote.TrackDetailsResponse> {
+        return try {
+            val response = apiService.getTrackDetails(assetId)
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error fetching track details", e)
+            Result.failure(e)
+        }
+    }
+
     companion object {
         private const val TAG = "TrackRepository"
 
         @Volatile
         private var INSTANCE: TrackRepository? = null
 
-        fun getInstance(database: AppDatabase): TrackRepository {
+        fun getInstance(database: AppDatabase, apiService: ApiService): TrackRepository {
             return INSTANCE ?: synchronized(this) {
-                val instance = TrackRepository(database)
+                val instance = TrackRepository(database, apiService)
                 INSTANCE = instance
                 instance
             }

@@ -102,7 +102,7 @@ dependencies {
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
     implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0") // Using Moshi converter
     implementation(libs.okhttp.logging)
 
     implementation(libs.compose.material.icons.core)

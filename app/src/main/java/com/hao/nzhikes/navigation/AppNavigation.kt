@@ -17,7 +17,10 @@ fun AppNavigation(
         startDestination = BottomNavItem.Home.route
     ) {
         composable(BottomNavItem.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onToggleFavorite = { },
+                onSearchClick = { }
+            )
         }
         composable(BottomNavItem.Trips.route) {
             TripsScreen()

@@ -15,6 +15,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.hao.explore.HomeScreen
+import com.hao.explore.HomeViewModel
+import com.hao.explore.SearchScreen
+import com.hao.me.MeScreen
+import com.hao.trips.TripsScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 
 @Composable
 fun MainScreen() {
@@ -25,8 +33,25 @@ fun MainScreen() {
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            AppNavigation(navController = navController)
+                NavHost(navController, startDestination = AppNavDestination.Home.route) {
+            composable(AppNavDestination.Home.route) {
+                val viewModel: HomeViewModel = hiltViewModel()
+                HomeScreen(
+                    onToggleFavorite = viewModel::toggleFavorite,
+                    onSearchClick = { navController.navigate(AppNavDestination.Search.route) }
+                )
+            }
+            composable(AppNavDestination.Trips.route) {
+                TripsScreen()
+            }
+            composable(AppNavDestination.Me.route) {
+                MeScreen()
+            }
+            composable(AppNavDestination.Search.route) {
+                SearchScreen(onTrackClick = { /* TODO */ })
+            }
         }
+    }
     }
 }
 
@@ -35,13 +60,14 @@ fun BottomNavBar(navController: NavHostController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Trips,
-        BottomNavItem.Me
+        BottomNavItem.Me,
+        BottomNavItem.Search
     )
     NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
-        items.forEach { screen ->
+            items.filter { it.route != AppNavDestination.Search.route }.forEach { screen ->
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = screen.title) },
                 label = { Text(screen.title) },

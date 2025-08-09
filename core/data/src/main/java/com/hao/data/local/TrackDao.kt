@@ -20,4 +20,7 @@ interface TrackDao {
 
     @Query("SELECT COUNT(*) FROM tracks")
     suspend fun getTrackCount(): Int
+
+    @Query("SELECT * FROM tracks WHERE name LIKE :query")
+    fun searchTracks(query: String): Flow<List<Track>>
 }

@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,6 +22,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(FileInputStream(localPropertiesFile))
+        }
+
+        val docApiKey = localProperties.getProperty("doc.api.key") ?: ""
+        buildConfigField("String", "DOC_API_KEY", "\"$docApiKey\"")
     }
 
     buildTypes {
@@ -39,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -113,7 +126,7 @@ dependencies {
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
     implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0") // Using Moshi converter
     implementation(libs.okhttp.logging)
 
     implementation(libs.compose.material.icons.core)

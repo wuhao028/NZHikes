@@ -4,6 +4,8 @@ import android.content.Context
 import com.hao.data.data.local.AppDatabase
 import com.hao.data.local.HikeDao
 import com.hao.data.repository.HikeRepository
+import com.hao.data.data.repository.TrackRepository
+import com.hao.data.remote.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +32,11 @@ object DataModule {
     @Singleton
     fun provideHikeRepository(hikeDao: HikeDao): HikeRepository {
         return HikeRepository(hikeDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackRepository(appDatabase: AppDatabase, apiService: ApiService): TrackRepository {
+        return TrackRepository.getInstance(appDatabase, apiService)
     }
 }
