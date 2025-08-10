@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -69,7 +68,7 @@ fun SearchScreen(
                     Text(
                         text = track.name,
                         modifier = Modifier
-                            .padding(24.dp), // Increased padding inside the card
+                            .padding(16.dp),
                         style = MaterialTheme.typography.headlineSmall // Made text larger
                     )
                 }

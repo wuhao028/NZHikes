@@ -1,12 +1,12 @@
 package com.hao.nzhikes.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -66,7 +66,9 @@ fun AppNavigation() {
                 SearchScreen(
                     onTrackClick = { assetId -> 
                         Log.d("AppNavigation", "Navigating to track: $assetId")
-                        navController.navigate("track/$assetId") 
+                        navController.navigate("track/$assetId") {
+                            popUpTo(BottomNavItem.Home.route)
+                        }
                     },
                     onCancel = { navController.popBackStack() }
                 )

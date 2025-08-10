@@ -92,7 +92,7 @@ dependencies {
     implementation(libs.coil.kt.compose)
 
     // OpenStreetMap for Android
-    implementation("org.osmdroid:osmdroid-android:6.1.17")
+    implementation(libs.osmdroid.android)
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
     implementation(libs.retrofit)
