@@ -23,10 +23,13 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             prepopulateDatabaseIfNeeded()
-            hikeRepository.getAllHikes().collect {
+            hikeRepository.getAllHikes().collect { allHikes ->
+                val greatWalks = allHikes.filter { it.duration.contains("days", ignoreCase = true) }
+                val dayHikes = allHikes.filterNot { it.duration.contains("days", ignoreCase = true) }
                 _uiState.value = HomeUiState(
-                    dayHikes = it,
-                    greatWalks = it.filter { it.difficulty.contains("days") })
+                    dayHikes = dayHikes,
+                    greatWalks = greatWalks
+                )
             }
         }
     }
@@ -78,7 +81,7 @@ private val initialHikes = listOf(
         distanceKm = 10.0,
         duration = "3h",
         difficulty = "Easy",
-        imageRes = R.drawable.alexknob
+        imageRes = com.hao.ui.R.drawable.alexknob
     ),
     Hike(
         name = "Lake Marian",
@@ -86,7 +89,7 @@ private val initialHikes = listOf(
         distanceKm = 8.2,
         duration = "3h",
         difficulty = "Hard",
-        imageRes = R.drawable.tewharatrack
+        imageRes = com.hao.ui.R.drawable.tewharatrack
     ),
     Hike(
         name = "Taranaki Falls",
@@ -94,7 +97,7 @@ private val initialHikes = listOf(
         distanceKm = 6.0,
         duration = "2h",
         difficulty = "Easy",
-        imageRes = R.drawable.tongariroalpinecrossing
+        imageRes = com.hao.ui.R.drawable.tongariroalpinecrossing
     ),
     Hike(
         name = "Rob Roy Glacier",
@@ -102,7 +105,7 @@ private val initialHikes = listOf(
         distanceKm = 10.0,
         duration = "4h",
         difficulty = "Moderate",
-        imageRes = R.drawable.royspeak
+        imageRes = com.hao.ui.R.drawable.royspeak
     ),
     Hike(
         name = "Milford Track",
@@ -110,7 +113,7 @@ private val initialHikes = listOf(
         distanceKm = 53.5,
         duration = "4 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.milford
+        imageRes = com.hao.ui.R.drawable.milford
     ),
     Hike(
         name = "Routeburn Track",
@@ -118,7 +121,7 @@ private val initialHikes = listOf(
         distanceKm = 32.0,
         duration = "2–4 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.routeburn
+        imageRes = com.hao.ui.R.drawable.routeburn
     ),
     Hike(
         name = "Kepler Track",
@@ -126,7 +129,7 @@ private val initialHikes = listOf(
         distanceKm = 60.0,
         duration = "3–4 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.kepler
+        imageRes = com.hao.ui.R.drawable.kepler
     ),
     Hike(
         name = "Rakiura Track",
@@ -134,7 +137,7 @@ private val initialHikes = listOf(
         distanceKm = 32.0,
         duration = "3 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.rakiura
+        imageRes = com.hao.ui.R.drawable.rakiura
     ),
     Hike(
         name = "Heaphy Track",
@@ -142,7 +145,7 @@ private val initialHikes = listOf(
         distanceKm = 78.4,
         duration = "4–6 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.heaphy
+        imageRes = com.hao.ui.R.drawable.heaphy
     ),
     Hike(
         name = "Tongariro Northern Circuit",
@@ -150,7 +153,7 @@ private val initialHikes = listOf(
         distanceKm = 43.1,
         duration = "3–4 days",
         difficulty = "Advanced",
-        imageRes = R.drawable.tongariro
+        imageRes = com.hao.ui.R.drawable.tongariro
     ),
     Hike(
         name = "Abel Tasman Coast Track",
@@ -158,7 +161,7 @@ private val initialHikes = listOf(
         distanceKm = 60.0,
         duration = "3–5 days",
         difficulty = "Easy",
-        imageRes = R.drawable.abel_tasman
+        imageRes = com.hao.ui.R.drawable.abel_tasman
     ),
     Hike(
         name = "Lake Waikaremoana Track",
@@ -166,7 +169,7 @@ private val initialHikes = listOf(
         distanceKm = 46.0,
         duration = "3–4 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.waikaremoana
+        imageRes = com.hao.ui.R.drawable.waikaremoana
     ),
     Hike(
         name = "Whanganui Journey",
@@ -174,7 +177,7 @@ private val initialHikes = listOf(
         distanceKm = 145.0,
         duration = "3–5 days",
         difficulty = "Easy",
-        imageRes = R.drawable.whanganui
+        imageRes = com.hao.ui.R.drawable.whanganui
     ),
     Hike(
         name = "Paparoa Track",
@@ -182,7 +185,7 @@ private val initialHikes = listOf(
         distanceKm = 55.0,
         duration = "2–3 days",
         difficulty = "Intermediate",
-        imageRes = R.drawable.paparoa
+        imageRes = com.hao.ui.R.drawable.paparoa
     ),
     Hike(
         name = "Hump Ridge Track",
@@ -190,6 +193,6 @@ private val initialHikes = listOf(
         distanceKm = 61.0,
         duration = "3 days",
         difficulty = "Intermediate–Advanced",
-        imageRes = R.drawable.humpridge
+        imageRes = com.hao.ui.R.drawable.humpridge
     )
 )
