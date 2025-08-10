@@ -35,6 +35,24 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
             hikeRepository.updateHike(updatedHike)
+
+            // Manually update the UI state to reflect the change immediately
+            val currentDayHikes = _uiState.value.dayHikes.toMutableList()
+            val dayHikeIndex = currentDayHikes.indexOfFirst { it.id == hike.id }
+            if (dayHikeIndex != -1) {
+                currentDayHikes[dayHikeIndex] = updatedHike
+            }
+
+            val currentGreatWalks = _uiState.value.greatWalks.toMutableList()
+            val greatWalkIndex = currentGreatWalks.indexOfFirst { it.id == hike.id }
+            if (greatWalkIndex != -1) {
+                currentGreatWalks[greatWalkIndex] = updatedHike
+            }
+
+            _uiState.value = _uiState.value.copy(
+                dayHikes = currentDayHikes,
+                greatWalks = currentGreatWalks
+            )
         }
     }
 

@@ -34,7 +34,6 @@ import com.hao.data.model.Hike
 
 @Composable
 fun HomeScreen(
-    onToggleFavorite: (Hike) -> Unit,
     onSearchClick: () -> Unit,
     listState: LazyListState = rememberLazyListState(),
     viewModel: HomeViewModel = hiltViewModel()
@@ -46,7 +45,7 @@ fun HomeScreen(
         HikingHomePage(
             listState = listState,
             uiState = uiState,
-            onToggleFavorite = onToggleFavorite
+            onToggleFavorite = viewModel::toggleFavorite
         )
     }
 }

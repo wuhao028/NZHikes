@@ -1,6 +1,6 @@
 package com.hao.ui
 
-import androidx.compose.foundation.Image
+import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+
+
 import com.hao.data.model.Hike
 
 @Composable
@@ -48,8 +49,8 @@ fun HikeCardVertical(
             modifier = Modifier.fillMaxSize()
         ) {
             Box {
-                Image(
-                    painter = rememberAsyncImagePainter(hike.imageRes),
+                AsyncImage(
+                    model = hike.imageRes,
                     contentDescription = hike.name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

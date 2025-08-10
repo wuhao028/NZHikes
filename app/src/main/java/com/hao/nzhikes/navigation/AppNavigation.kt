@@ -52,7 +52,6 @@ fun AppNavigation() {
         ) {
             composable(BottomNavItem.Home.route) {
                 HomeScreen(
-                    onToggleFavorite = { },
                     onSearchClick = { navController.navigate(BottomNavItem.Search.route) }
                 )
             }
