@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("org.locationtech.proj4j:proj4j:1.2.1")
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)

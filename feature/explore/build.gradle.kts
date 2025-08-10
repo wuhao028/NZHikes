@@ -89,8 +89,10 @@ dependencies {
 
     implementation(libs.androidx.window)
     implementation(libs.androidx.window.core)
-
     implementation(libs.coil.kt.compose)
+
+    // OpenStreetMap for Android
+    implementation("org.osmdroid:osmdroid-android:6.1.17")
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
     implementation(libs.retrofit)

@@ -6,10 +6,12 @@ import com.squareup.moshi.JsonClass
 data class TrackDetailsResponse(
     val assetId: String?,
     val name: String?,
-    // Some endpoints may return description/introduction; keep both optional for compatibility
-    val description: String?,
     val introduction: String?,
-    // Single hero image or a list of images; keep both optional
-    val imageUrl: String?,
-    val images: List<String>?
+    val introductionThumbnail: String?, // Main image for the track
+    val distance: String?,
+    val walkDuration: String?,
+    val walkTrackCategory: List<String>?,
+    val locationString: String?,
+    val region: List<String>?,
+    val line: List<List<List<Double>>>? // Coordinates for the map path
 )
