@@ -30,10 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hao.data.model.Hike
 
 @Composable
 fun HomeScreen(
     onSearchClick: () -> Unit,
+    onHikeClick: (Hike) -> Unit,
     listState: LazyListState = rememberLazyListState(),
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -44,7 +46,8 @@ fun HomeScreen(
         HikingHomePage(
             listState = listState,
             uiState = uiState,
-            onToggleFavorite = viewModel::toggleFavorite
+            onToggleFavorite = viewModel::toggleFavorite,
+            onHikeClick = onHikeClick
         )
     }
 }

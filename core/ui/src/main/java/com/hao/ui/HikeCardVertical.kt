@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,13 +36,15 @@ import com.hao.data.model.Hike
 fun HikeCardVertical(
     hike: Hike,
     onToggleFavorite: (Hike) -> Unit,
+    onClick: (Hike) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .height(220.dp),
+            .height(220.dp)
+            .clickable { onClick(hike) },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {

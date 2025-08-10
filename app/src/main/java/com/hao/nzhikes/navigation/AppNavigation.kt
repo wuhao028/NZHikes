@@ -52,11 +52,14 @@ fun AppNavigation() {
         ) {
             composable(BottomNavItem.Home.route) {
                 HomeScreen(
-                    onSearchClick = { navController.navigate(BottomNavItem.Search.route) }
+                    onSearchClick = { navController.navigate(BottomNavItem.Search.route) },
+                    onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
                 )
             }
             composable(BottomNavItem.Trips.route) {
-                TripsScreen()
+                TripsScreen(
+                    onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
+                )
             }
             composable(BottomNavItem.Me.route) {
                 MeScreen()

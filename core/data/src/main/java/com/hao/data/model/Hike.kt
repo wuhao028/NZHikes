@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Hike(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val assetId: String,
     val name: String,
     val location: String,
     val distanceKm: Double,

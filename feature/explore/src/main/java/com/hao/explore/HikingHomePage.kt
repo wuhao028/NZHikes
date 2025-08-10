@@ -22,7 +22,8 @@ import com.hao.ui.HikeCardVertical
 fun HikingHomePage(
     listState: LazyListState,
     uiState: HomeUiState,
-    onToggleFavorite: (Hike) -> Unit
+    onToggleFavorite: (Hike) -> Unit,
+    onHikeClick: (Hike) -> Unit
 ) {
     LazyColumn(
         state = listState,
@@ -41,6 +42,7 @@ fun HikingHomePage(
                     HikeCardVertical(
                         hike = hike,
                         onToggleFavorite = onToggleFavorite,
+                        onClick = onHikeClick,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -62,6 +64,7 @@ fun HikingHomePage(
                     HikeCardVertical(
                         hike = walk,
                         onToggleFavorite = onToggleFavorite,
+                        onClick = onHikeClick,
                         modifier = Modifier.weight(1f)
                     )
                 }

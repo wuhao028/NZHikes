@@ -22,7 +22,10 @@ import com.hao.data.model.Hike
 import com.hao.ui.HikeCardVertical
 
 @Composable
-fun TripsScreen(viewModel: TripsViewModel = hiltViewModel()) {
+fun TripsScreen(
+    onHikeClick: (Hike) -> Unit,
+    viewModel: TripsViewModel = hiltViewModel()
+) {
     val favoriteHikes by viewModel.favoriteHikes.collectAsState()
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Favourite", "Done")
@@ -37,14 +40,22 @@ fun TripsScreen(viewModel: TripsViewModel = hiltViewModel()) {
             }
         }
         when (tabIndex) {
-            0 -> FavouriteScreen(hikes = favoriteHikes, onToggleFavorite = viewModel::toggleFavorite)
+            0 -> FavouriteScreen(
+                hikes = favoriteHikes,
+                onToggleFavorite = viewModel::toggleFavorite,
+                onHikeClick = onHikeClick
+            )
             1 -> DoneScreen()
         }
     }
 }
 
 @Composable
-fun FavouriteScreen(hikes: List<Hike>, onToggleFavorite: (Hike) -> Unit) {
+fun FavouriteScreen(
+    hikes: List<Hike>,
+    onToggleFavorite: (Hike) -> Unit,
+    onHikeClick: (Hike) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -52,7 +63,12 @@ fun FavouriteScreen(hikes: List<Hike>, onToggleFavorite: (Hike) -> Unit) {
         items(hikes) { hike ->
             // For now, onToggleFavorite is empty, as we might not want to unfavorite from this screen.
             // Or we could pass the viewModel's toggle function here.
-                        HikeCardVertical(hike = hike, onToggleFavorite = onToggleFavorite, modifier = Modifier.fillMaxWidth())
+                        HikeCardVertical(
+                            hike = hike,
+                            onToggleFavorite = onToggleFavorite,
+                            onClick = onHikeClick,
+                            modifier = Modifier.fillMaxWidth()
+                        )
         }
     }
 }
