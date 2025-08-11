@@ -2,7 +2,9 @@ package com.hao.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hao.data.model.Campsite
 import com.hao.data.model.Hike
+import com.hao.data.model.Hut
 import com.hao.data.repository.HikeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,36 +30,14 @@ class HomeViewModel @Inject constructor(
                 val dayHikes = allHikes.filterNot { it.duration.contains("days", ignoreCase = true) }
                 _uiState.value = HomeUiState(
                     dayHikes = dayHikes,
-                    greatWalks = greatWalks
+                    greatWalks = greatWalks,
+                    campsites = emptyList(),
+                    huts = emptyList()
                 )
             }
         }
     }
 
-    fun toggleFavorite(hike: Hike) {
-        viewModelScope.launch {
-            val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
-            hikeRepository.updateHike(updatedHike)
-
-            // Manually update the UI state to reflect the change immediately
-            val currentDayHikes = _uiState.value.dayHikes.toMutableList()
-            val dayHikeIndex = currentDayHikes.indexOfFirst { it.id == hike.id }
-            if (dayHikeIndex != -1) {
-                currentDayHikes[dayHikeIndex] = updatedHike
-            }
-
-            val currentGreatWalks = _uiState.value.greatWalks.toMutableList()
-            val greatWalkIndex = currentGreatWalks.indexOfFirst { it.id == hike.id }
-            if (greatWalkIndex != -1) {
-                currentGreatWalks[greatWalkIndex] = updatedHike
-            }
-
-            _uiState.value = _uiState.value.copy(
-                dayHikes = currentDayHikes,
-                greatWalks = currentGreatWalks
-            )
-        }
-    }
 
     private suspend fun prepopulateDatabaseIfNeeded() {
         val hikes = hikeRepository.getAllHikes().first()
@@ -70,6 +50,8 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val dayHikes: List<Hike> = emptyList(),
     val greatWalks: List<Hike> = emptyList(),
+    val campsites: List<Campsite> = emptyList(),
+    val huts: List<Hut> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
