@@ -146,7 +146,7 @@ private fun TracksList(
         HikingHomePage(
             listState = listState,
             uiState = uiState,
-            onToggleFavorite = {},
+            onToggleFavorite = { viewModel.toggleFavorite(it) },
             onHikeClick = onHikeClick
         )
     }

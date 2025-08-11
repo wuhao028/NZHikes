@@ -39,6 +39,13 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    fun toggleFavorite(hike: Hike) {
+        viewModelScope.launch {
+            val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
+            hikeRepository.updateHike(updatedHike)
+        }
+    }
+
     private suspend fun prepopulateDatabaseIfNeeded() {
         val hikes = hikeRepository.getAllHikes().first()
         if (hikes.isEmpty()) {
