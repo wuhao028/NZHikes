@@ -66,9 +66,9 @@ fun AppNavigation() {
             }
             composable(BottomNavItem.Search.route) {
                 SearchScreen(
-                    onTrackClick = { assetId -> 
-                        Log.d("AppNavigation", "Navigating to track: $assetId")
-                        navController.navigate("track/$assetId") {
+                    onTrackClick = { id ->
+                        Log.d("AppNavigation", "Navigating to track: $id")
+                        navController.navigate("track/$id") {
                             popUpTo(BottomNavItem.Home.route)
                         }
                     },
