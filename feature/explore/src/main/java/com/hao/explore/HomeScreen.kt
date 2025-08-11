@@ -123,7 +123,6 @@ fun HomeScreen(
         when (selectedTabIndex) {
             0 -> TracksList(
                 uiState = uiState,
-                onSearch = onSearchClick,
                 listState = listState,
                 onHikeClick = onHikeClick,
                 viewModel = viewModel
@@ -139,13 +138,11 @@ fun HomeScreen(
 private fun TracksList(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
-    onSearch: () -> Unit,
     listState: LazyListState,
     onHikeClick: (Hike) -> Unit,
     viewModel: HomeViewModel
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        SearchBar(onSearchClick = onSearch)
         HikingHomePage(
             listState = listState,
             uiState = uiState,
