@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.hao.data.model.Hike
 import com.hao.data.remote.TrackDetailsResponse
+import com.hao.data.util.CoordinateUtil
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -205,30 +206,13 @@ fun MapCard(
         track.line?.flatMap { line ->
             line.mapNotNull { coord ->
                 if (coord.size >= 2) {
-                    val lon = coord[0]
-                    val lat = coord[1]
-                    GeoPoint(lat, lon)
+                    val easting = coord[0]
+                    val northing = coord[1]
+                    val wgs84 = CoordinateUtil.nztmToWgs84(easting, northing)
+                    GeoPoint(wgs84.y, wgs84.x)
                 } else null
             }
         } ?: emptyList()
-    }
-
-    val mapView = remember {
-        MapView(context).apply {
-            Configuration.getInstance()
-                .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
-            setTileSource(TileSourceFactory.MAPNIK)
-            controller.setZoom(14.0)
-            if (geoPoints.isNotEmpty()) {
-                controller.setCenter(geoPoints.first())
-                val polyline = Polyline().apply {
-                    setPoints(geoPoints)
-                    outlinePaint.color = android.graphics.Color.RED
-                    outlinePaint.strokeWidth = 5f
-                }
-                overlayManager.add(polyline)
-            }
-        }
     }
 
     Card(
@@ -237,10 +221,33 @@ fun MapCard(
     ) {
         Column {
             AndroidView(
-                factory = { mapView },
+                factory = {
+                    MapView(it).apply {
+                        Configuration.getInstance()
+                            .load(it, it.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+                        setTileSource(TileSourceFactory.MAPNIK)
+                    }
+                },
+                update = { mapView ->
+                    mapView.overlayManager.clear()
+                    if (geoPoints.isNotEmpty()) {
+                        val polyline = Polyline().apply {
+                            setPoints(geoPoints)
+                            outlinePaint.color = android.graphics.Color.RED
+                            outlinePaint.strokeWidth = 8f
+                        }
+                        mapView.controller.setZoom(14.0)
+                        mapView.controller.setCenter(geoPoints.first())
+                        mapView.overlayManager.add(polyline)
+                    } else {
+                        mapView.controller.setZoom(5.0)
+                        mapView.controller.setCenter(GeoPoint(-41.28664, 174.77557))
+                    }
+                    mapView.invalidate()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(250.dp)
             )
         }
     }
