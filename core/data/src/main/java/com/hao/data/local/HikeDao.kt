@@ -24,4 +24,10 @@ interface HikeDao {
 
     @Query("SELECT * FROM hikes WHERE id = :hikeId")
     fun getHikeById(hikeId: Int): Flow<Hike?>
+
+    @Query("SELECT * FROM hikes WHERE assetId = :assetId")
+    suspend fun getHikeByAssetId(assetId: String): Hike?
+
+    @Query("SELECT * FROM hikes WHERE isDone = 1")
+    fun getDoneHikes(): Flow<List<Hike>>
 }

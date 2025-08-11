@@ -28,6 +28,7 @@ fun TripsScreen(
     viewModel: TripsViewModel = hiltViewModel()
 ) {
     val favoriteHikes by viewModel.favoriteHikes.collectAsState()
+    val doneHikes by viewModel.doneHikes.collectAsState()
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Favourite", "Done")
 
@@ -46,7 +47,11 @@ fun TripsScreen(
                 onToggleFavorite = viewModel::toggleFavorite,
                 onHikeClick = onHikeClick
             )
-            1 -> DoneScreen()
+            1 -> DoneScreen(
+                hikes = doneHikes,
+                onHikeClick = onHikeClick,
+                onToggleFavorite = viewModel::toggleFavorite
+            )
         }
     }
 }
@@ -75,6 +80,22 @@ fun FavouriteScreen(
 }
 
 @Composable
-fun DoneScreen() {
-    Text("This is the Done screen")
+fun DoneScreen(
+    hikes: List<Hike>,
+    onHikeClick: (Hike) -> Unit,
+    onToggleFavorite: (Hike) -> Unit
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(hikes) { hike ->
+            HikeCardVertical(
+                hike = hike,
+                onToggleFavorite = onToggleFavorite,
+                onClick = onHikeClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
 }

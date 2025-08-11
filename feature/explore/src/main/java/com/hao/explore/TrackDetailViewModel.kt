@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.SavedStateHandle
 import com.hao.data.data.repository.TrackRepository
+import com.hao.data.model.Hike
+import com.hao.data.repository.HikeRepository
 import com.hao.data.remote.TrackDetailsResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -14,12 +16,14 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class TrackDetailViewModel @Inject constructor(
     private val repository: TrackRepository,
+    private val hikeRepository: HikeRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     data class UiState(
         val loading: Boolean = true,
         val data: TrackDetailsResponse? = null,
+        val hike: Hike? = null,
         val error: String? = null
     )
 
@@ -35,12 +39,31 @@ class TrackDetailViewModel @Inject constructor(
         }
     }
 
+        fun toggleFavorite(hike: Hike) {
+        viewModelScope.launch {
+            val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
+            hikeRepository.updateHike(updatedHike)
+            _uiState.value = _uiState.value.copy(hike = updatedHike)
+        }
+    }
+
+    fun toggleDone(hike: Hike) {
+        viewModelScope.launch {
+            val updatedHike = hike.copy(isDone = !hike.isDone)
+            hikeRepository.updateHike(updatedHike)
+            _uiState.value = _uiState.value.copy(hike = updatedHike)
+        }
+    }
+
     private fun fetchDetails(assetId: String) {
         _uiState.value = UiState(loading = true)
         viewModelScope.launch {
             val result = repository.getTrackDetails(assetId)
             _uiState.value = result.fold(
-                onSuccess = { UiState(loading = false, data = it) },
+                onSuccess = { response ->
+                    val hike = hikeRepository.getHikeByAssetId(assetId)
+                    UiState(loading = false, data = response, hike = hike)
+                },
                 onFailure = { UiState(loading = false, error = it.message ?: "Unknown error") }
             )
         }

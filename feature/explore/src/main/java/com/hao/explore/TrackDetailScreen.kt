@@ -14,13 +14,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Hiking
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Terrain
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.hao.data.model.Hike
 import com.hao.data.remote.TrackDetailsResponse
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -72,13 +78,23 @@ fun TrackDetailScreen(
         }
 
         else -> uiState.data?.let { data ->
-            TrackDetailContent(data)
+            TrackDetailContent(
+                data = data,
+                hike = uiState.hike,
+                onToggleFavorite = viewModel::toggleFavorite,
+                onToggleDone = viewModel::toggleDone
+            )
         }
     }
 }
 
 @Composable
-fun TrackDetailContent(data: TrackDetailsResponse) {
+fun TrackDetailContent(
+    data: TrackDetailsResponse,
+    hike: Hike?,
+    onToggleFavorite: (Hike) -> Unit,
+    onToggleDone: (Hike) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 16.dp)
@@ -106,6 +122,21 @@ fun TrackDetailContent(data: TrackDetailsResponse) {
                     text = data.locationString ?: "Location",
                     style = MaterialTheme.typography.bodyLarge
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row {
+                    IconButton(onClick = { hike?.let { onToggleFavorite(it) } }) {
+                        Icon(
+                            imageVector = if (hike?.isFavorite == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Favorite"
+                        )
+                    }
+                    IconButton(onClick = { hike?.let { onToggleDone(it) } }) {
+                        Icon(
+                            imageVector = if (hike?.isDone == true) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
+                            contentDescription = "Mark as Done"
+                        )
+                    }
+                }
             }
         }
 

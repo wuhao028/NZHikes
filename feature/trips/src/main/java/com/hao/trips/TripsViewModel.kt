@@ -23,6 +23,9 @@ class TripsViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    val doneHikes: StateFlow<List<Hike>> = hikeRepository.getDoneHikes()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
     fun toggleFavorite(hike: Hike) {
         viewModelScope.launch {
             val updatedHike = hike.copy(isFavorite = !hike.isFavorite)

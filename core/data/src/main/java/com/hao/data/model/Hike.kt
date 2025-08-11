@@ -14,5 +14,6 @@ data class Hike(
     val duration: String,
     val difficulty: String,
     val imageRes: Int, // For local drawable resource
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+    var isDone: Boolean = false
 )

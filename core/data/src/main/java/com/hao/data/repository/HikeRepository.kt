@@ -12,6 +12,10 @@ class HikeRepository @Inject constructor(
 
     fun getFavoriteHikes(): Flow<List<Hike>> = hikeDao.getFavoriteHikes()
 
+    suspend fun getHikeByAssetId(assetId: String): Hike? = hikeDao.getHikeByAssetId(assetId)
+
+    fun getDoneHikes(): Flow<List<Hike>> = hikeDao.getDoneHikes()
+
     suspend fun updateHike(hike: Hike) {
         hikeDao.updateHike(hike)
     }
