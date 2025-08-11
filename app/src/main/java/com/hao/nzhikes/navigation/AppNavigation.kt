@@ -48,16 +48,17 @@ fun AppNavigation() {
         NavHost(
             navController = navController,
             startDestination = BottomNavItem.Home.route,
-            modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Home.route) {
                 HomeScreen(
+                    modifier = Modifier.padding(innerPadding),
                     onSearchClick = { navController.navigate(BottomNavItem.Search.route) },
                     onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
                 )
             }
             composable(BottomNavItem.Trips.route) {
                 TripsScreen(
+                    modifier = Modifier.padding(innerPadding),
                     onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
                 )
             }

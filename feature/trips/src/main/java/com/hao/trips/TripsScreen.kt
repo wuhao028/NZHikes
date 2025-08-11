@@ -23,6 +23,7 @@ import com.hao.ui.HikeCardVertical
 
 @Composable
 fun TripsScreen(
+    modifier: Modifier = Modifier,
     onHikeClick: (Hike) -> Unit,
     viewModel: TripsViewModel = hiltViewModel()
 ) {
@@ -30,7 +31,7 @@ fun TripsScreen(
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Favourite", "Done")
 
-    Column {
+    Column(modifier = modifier) {
         TabRow(selectedTabIndex = tabIndex) {
             tabs.forEachIndexed { index, title ->
                 Tab(text = { Text(title) },

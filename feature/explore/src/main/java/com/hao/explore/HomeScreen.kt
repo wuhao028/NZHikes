@@ -34,6 +34,7 @@ import com.hao.data.model.Hike
 
 @Composable
 fun HomeScreen(
+    modifier: Modifier = Modifier,
     onSearchClick: () -> Unit,
     onHikeClick: (Hike) -> Unit,
     listState: LazyListState = rememberLazyListState(),
@@ -41,7 +42,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         SearchBar(onSearchClick = onSearchClick)
         HikingHomePage(
             listState = listState,
