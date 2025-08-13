@@ -59,6 +59,9 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+    // Gson for JSON parsing
+    implementation("com.google.code.gson:gson:2.10.1")
+
     // Moshi for JSON parsing
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)

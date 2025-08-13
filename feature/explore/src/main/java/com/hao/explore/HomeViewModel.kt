@@ -5,39 +5,78 @@ import androidx.lifecycle.viewModelScope
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hike
 import com.hao.data.model.Hut
+import com.hao.data.local.CampsiteDao
+import com.hao.data.local.HutDao
 import com.hao.data.repository.HikeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val hikeRepository: HikeRepository
+    private val hikeRepository: HikeRepository,
+    private val campsiteDao: CampsiteDao,
+    private val hutDao: HutDao
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val _campsiteSearchQuery = MutableStateFlow("")
+    val campsiteSearchQuery: StateFlow<String> = _campsiteSearchQuery.asStateFlow()
+
+    private val _hutSearchQuery = MutableStateFlow("")
+    val hutSearchQuery: StateFlow<String> = _hutSearchQuery.asStateFlow()
+
     init {
         viewModelScope.launch {
             prepopulateDatabaseIfNeeded()
-            hikeRepository.getAllHikes().collect { allHikes ->
-                val greatWalks = allHikes.filter { it.duration.contains("days", ignoreCase = true) }
-                val dayHikes = allHikes.filterNot { it.duration.contains("days", ignoreCase = true) }
-                _uiState.value = HomeUiState(
+
+            val hikesFlow = hikeRepository.getAllHikes()
+
+            val campsitesFlow = _campsiteSearchQuery.flatMapLatest { query ->
+                if (query.isBlank()) {
+                    campsiteDao.getAllCampsites()
+                } else {
+                    campsiteDao.searchCampsites(query)
+                }
+            }
+
+            val hutsFlow = _hutSearchQuery.flatMapLatest { query ->
+                if (query.isBlank()) {
+                    hutDao.getAllHuts()
+                } else {
+                    hutDao.searchHuts(query)
+                }
+            }
+
+            combine(hikesFlow, campsitesFlow, hutsFlow) { hikes, campsites, huts ->
+                val greatWalks = hikes.filter { it.duration.contains("days", ignoreCase = true) }
+                val dayHikes = hikes.filterNot { it.duration.contains("days", ignoreCase = true) }
+                _uiState.value = _uiState.value.copy(
                     dayHikes = dayHikes,
                     greatWalks = greatWalks,
-                    campsites = emptyList(),
-                    huts = emptyList()
+                    campsites = campsites,
+                    huts = huts
                 )
-            }
+            }.collect {}
         }
     }
 
+
+    fun onCampsiteSearchQueryChanged(query: String) {
+        _campsiteSearchQuery.value = query
+    }
+
+    fun onHutSearchQueryChanged(query: String) {
+        _hutSearchQuery.value = query
+    }
 
     fun toggleFavorite(hike: Hike) {
         viewModelScope.launch {
@@ -59,6 +98,8 @@ data class HomeUiState(
     val greatWalks: List<Hike> = emptyList(),
     val campsites: List<Campsite> = emptyList(),
     val huts: List<Hut> = emptyList(),
+    val campsiteSearchQuery: String = "",
+    val hutSearchQuery: String = "",
     val isLoading: Boolean = false,
     val error: String? = null
 )

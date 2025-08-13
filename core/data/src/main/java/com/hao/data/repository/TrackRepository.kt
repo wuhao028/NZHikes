@@ -2,8 +2,8 @@ package com.hao.data.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.hao.data.data.local.AppDatabase
 import com.hao.data.data.model.Track
+import com.hao.data.local.AppDatabase
 import com.hao.data.remote.ApiService
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

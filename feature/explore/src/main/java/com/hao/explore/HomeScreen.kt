@@ -128,8 +128,8 @@ fun HomeScreen(
                 viewModel = viewModel
             )
 
-            1 -> CampsitesList(campsites = uiState.campsites)
-            2 -> HutsList(huts = uiState.huts)
+            1 -> CampsitesList(campsites = uiState.campsites, viewModel = viewModel)
+            2 -> HutsList(huts = uiState.huts, viewModel = viewModel)
         }
     }
 }
@@ -153,25 +153,49 @@ private fun TracksList(
 }
 
 @Composable
-private fun CampsitesList(campsites: List<Campsite>) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(campsites) { campsite ->
-            CampsiteItem(campsite = campsite)
+private fun CampsitesList(campsites: List<Campsite>, viewModel: HomeViewModel) {
+    val searchQuery by viewModel.campsiteSearchQuery.collectAsState()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { viewModel.onCampsiteSearchQueryChanged(it) },
+            label = { Text("Search Campsites") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(campsites) { campsite ->
+                CampsiteItem(campsite = campsite)
+            }
         }
     }
 }
 
 @Composable
-private fun HutsList(huts: List<Hut>) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(huts) { hut ->
-            HutItem(hut = hut)
+private fun HutsList(huts: List<Hut>, viewModel: HomeViewModel) {
+    val searchQuery by viewModel.hutSearchQuery.collectAsState()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { viewModel.onHutSearchQueryChanged(it) },
+            label = { Text("Search Huts") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(huts) { hut ->
+                HutItem(hut = hut)
+            }
         }
     }
 }
