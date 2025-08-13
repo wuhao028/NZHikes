@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.SavedStateHandle
 import com.hao.data.data.repository.TrackRepository
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.data.repository.HikeRepository
 import com.hao.data.remote.TrackDetailsResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +23,7 @@ class TrackDetailViewModel @Inject constructor(
     data class UiState(
         val loading: Boolean = true,
         val data: TrackDetailsResponse? = null,
-        val hike: Hike? = null,
+        val hike: LocalTrack? = null,
         val error: String? = null
     )
 
@@ -39,7 +39,7 @@ class TrackDetailViewModel @Inject constructor(
         }
     }
 
-        fun toggleFavorite(hike: Hike) {
+        fun toggleFavorite(hike: LocalTrack) {
         viewModelScope.launch {
             val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
             hikeRepository.updateHike(updatedHike)
@@ -47,7 +47,7 @@ class TrackDetailViewModel @Inject constructor(
         }
     }
 
-    fun toggleDone(hike: Hike) {
+    fun toggleDone(hike: LocalTrack) {
         viewModelScope.launch {
             val updatedHike = hike.copy(isDone = !hike.isDone)
             hikeRepository.updateHike(updatedHike)

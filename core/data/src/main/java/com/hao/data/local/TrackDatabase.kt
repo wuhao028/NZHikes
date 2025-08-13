@@ -11,9 +11,9 @@ import com.google.gson.reflect.TypeToken
 import com.hao.data.data.converter.CoordinateListConverter
 import com.hao.data.data.converter.StringListConverter
 import com.hao.data.data.local.TrackDao
-import com.hao.data.data.model.Track
+import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.data.model.Hut
 import com.hao.data.util.readJsonFromAssets
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [Track::class, Hike::class, Campsite::class, Hut::class],
+    entities = [RemoteTrack::class, LocalTrack::class, Campsite::class, Hut::class],
     version = 3,
     exportSchema = false
 )

@@ -39,16 +39,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hao.data.data.model.Track
+import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.data.model.Hut
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onSearchClick: () -> Unit,
-    onHikeClick: (Hike) -> Unit,
+    onHikeClick: (LocalTrack) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -139,7 +139,7 @@ private fun TracksList(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     listState: LazyListState,
-    onHikeClick: (Hike) -> Unit,
+    onHikeClick: (LocalTrack) -> Unit,
     viewModel: HomeViewModel
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -201,7 +201,7 @@ private fun HutsList(huts: List<Hut>, viewModel: HomeViewModel) {
 }
 
 @Composable
-private fun TrackItem(track: Track, onClick: () -> Unit) {
+private fun TrackItem(track: RemoteTrack, onClick: () -> Unit) {
     Card(
         modifier = Modifier.clickable(onClick = onClick)
     ) {

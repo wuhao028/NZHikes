@@ -10,7 +10,7 @@ import com.hao.data.data.converter.StringListConverter
  * Data class representing a hiking track
  */
 @Entity(tableName = "tracks")
-data class Track(
+data class RemoteTrack(
     @PrimaryKey
     val assetId: String,
     val name: String,

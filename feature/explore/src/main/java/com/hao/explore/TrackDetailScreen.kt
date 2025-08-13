@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.data.remote.TrackDetailsResponse
 import com.hao.data.util.CoordinateUtil
 import org.osmdroid.config.Configuration
@@ -92,9 +92,9 @@ fun TrackDetailScreen(
 @Composable
 fun TrackDetailContent(
     data: TrackDetailsResponse,
-    hike: Hike?,
-    onToggleFavorite: (Hike) -> Unit,
-    onToggleDone: (Hike) -> Unit
+    hike: LocalTrack?,
+    onToggleFavorite: (LocalTrack) -> Unit,
+    onToggleDone: (LocalTrack) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

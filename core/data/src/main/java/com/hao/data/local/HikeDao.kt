@@ -5,29 +5,29 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HikeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(hikes: List<Hike>)
+    suspend fun insertAll(hikes: List<LocalTrack>)
 
     @Update
-    suspend fun updateHike(hike: Hike)
+    suspend fun updateHike(hike: LocalTrack)
 
     @Query("SELECT * FROM hikes")
-    fun getAllHikes(): Flow<List<Hike>>
+    fun getAllHikes(): Flow<List<LocalTrack>>
 
     @Query("SELECT * FROM hikes WHERE isFavorite = 1")
-    fun getFavoriteHikes(): Flow<List<Hike>>
+    fun getFavoriteHikes(): Flow<List<LocalTrack>>
 
     @Query("SELECT * FROM hikes WHERE id = :hikeId")
-    fun getHikeById(hikeId: Int): Flow<Hike?>
+    fun getHikeById(hikeId: Int): Flow<LocalTrack?>
 
     @Query("SELECT * FROM hikes WHERE assetId = :assetId")
-    suspend fun getHikeByAssetId(assetId: String): Hike?
+    suspend fun getHikeByAssetId(assetId: String): LocalTrack?
 
     @Query("SELECT * FROM hikes WHERE isDone = 1")
-    fun getDoneHikes(): Flow<List<Hike>>
+    fun getDoneHikes(): Flow<List<LocalTrack>>
 }

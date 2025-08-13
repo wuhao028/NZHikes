@@ -18,13 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.ui.HikeCardVertical
 
 @Composable
 fun TripsScreen(
     modifier: Modifier = Modifier,
-    onHikeClick: (Hike) -> Unit,
+    onHikeClick: (LocalTrack) -> Unit,
     viewModel: TripsViewModel = hiltViewModel()
 ) {
     val favoriteHikes by viewModel.favoriteHikes.collectAsState()
@@ -58,9 +58,9 @@ fun TripsScreen(
 
 @Composable
 fun FavouriteScreen(
-    hikes: List<Hike>,
-    onToggleFavorite: (Hike) -> Unit,
-    onHikeClick: (Hike) -> Unit
+    hikes: List<LocalTrack>,
+    onToggleFavorite: (LocalTrack) -> Unit,
+    onHikeClick: (LocalTrack) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
@@ -81,9 +81,9 @@ fun FavouriteScreen(
 
 @Composable
 fun DoneScreen(
-    hikes: List<Hike>,
-    onHikeClick: (Hike) -> Unit,
-    onToggleFavorite: (Hike) -> Unit
+    hikes: List<LocalTrack>,
+    onHikeClick: (LocalTrack) -> Unit,
+    onToggleFavorite: (LocalTrack) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),

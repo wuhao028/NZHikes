@@ -2,7 +2,7 @@ package com.hao.trips
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.data.repository.HikeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,17 +16,17 @@ class TripsViewModel @Inject constructor(
     private val hikeRepository: HikeRepository
 ) : ViewModel() {
 
-    val favoriteHikes: StateFlow<List<Hike>> = hikeRepository.getFavoriteHikes()
+    val favoriteHikes: StateFlow<List<LocalTrack>> = hikeRepository.getFavoriteHikes()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 
-    val doneHikes: StateFlow<List<Hike>> = hikeRepository.getDoneHikes()
+    val doneHikes: StateFlow<List<LocalTrack>> = hikeRepository.getDoneHikes()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun toggleFavorite(hike: Hike) {
+    fun toggleFavorite(hike: LocalTrack) {
         viewModelScope.launch {
             val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
             hikeRepository.updateHike(updatedHike)

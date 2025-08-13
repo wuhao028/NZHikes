@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.hao.data.data.model.Track
+import com.hao.data.data.model.RemoteTrack
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,14 +13,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTracks(tracks: List<Track>)
+    suspend fun insertTracks(tracks: List<RemoteTrack>)
 
     @Query("SELECT * FROM tracks LIMIT :limit")
-    fun getTracks(limit: Int = 20): Flow<List<Track>>
+    fun getTracks(limit: Int = 20): Flow<List<RemoteTrack>>
 
     @Query("SELECT COUNT(*) FROM tracks")
     suspend fun getTrackCount(): Int
 
     @Query("SELECT * FROM tracks WHERE name LIKE :query")
-    fun searchTracks(query: String): Flow<List<Track>>
+    fun searchTracks(query: String): Flow<List<RemoteTrack>>
 }

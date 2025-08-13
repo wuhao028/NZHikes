@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.ui.HikeCardVertical
 
 
@@ -22,8 +22,8 @@ import com.hao.ui.HikeCardVertical
 fun HikingHomePage(
     listState: LazyListState,
     uiState: HomeUiState,
-    onToggleFavorite: (Hike) -> Unit,
-    onHikeClick: (Hike) -> Unit
+    onToggleFavorite: (LocalTrack) -> Unit,
+    onHikeClick: (LocalTrack) -> Unit
 ) {
     LazyColumn(
         state = listState,

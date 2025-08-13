@@ -3,7 +3,7 @@ package com.hao.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hao.data.model.Campsite
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 import com.hao.data.model.Hut
 import com.hao.data.local.CampsiteDao
 import com.hao.data.local.HutDao
@@ -78,7 +78,7 @@ class HomeViewModel @Inject constructor(
         _hutSearchQuery.value = query
     }
 
-    fun toggleFavorite(hike: Hike) {
+    fun toggleFavorite(hike: LocalTrack) {
         viewModelScope.launch {
             val updatedHike = hike.copy(isFavorite = !hike.isFavorite)
             hikeRepository.updateHike(updatedHike)
@@ -94,8 +94,8 @@ class HomeViewModel @Inject constructor(
 }
 
 data class HomeUiState(
-    val dayHikes: List<Hike> = emptyList(),
-    val greatWalks: List<Hike> = emptyList(),
+    val dayHikes: List<LocalTrack> = emptyList(),
+    val greatWalks: List<LocalTrack> = emptyList(),
     val campsites: List<Campsite> = emptyList(),
     val huts: List<Hut> = emptyList(),
     val campsiteSearchQuery: String = "",
@@ -105,7 +105,7 @@ data class HomeUiState(
 )
 
 private val initialHikes = listOf(
-    Hike(
+    LocalTrack(
         assetId = "45055658-49a3-4560-80a5-86c2e67a7d41",
         name = "Hooker Valley Track",
         location = "Aoraki/Mt Cook",
@@ -114,7 +114,7 @@ private val initialHikes = listOf(
         difficulty = "Easy",
         imageRes = com.hao.ui.R.drawable.alexknob
     ),
-    Hike(
+    LocalTrack(
         assetId = "517e49c7-bb4c-4fa2-943c-685bf47c3283",
         name = "Lake Marian",
         location = "Fiordland",
@@ -123,7 +123,7 @@ private val initialHikes = listOf(
         difficulty = "Hard",
         imageRes = com.hao.ui.R.drawable.tewharatrack
     ),
-    Hike(
+    LocalTrack(
         assetId = "cf8245d1-3f6d-4867-9a0c-1cb702f66e77",
         name = "Taranaki Falls",
         location = "Tongariro",
@@ -132,7 +132,7 @@ private val initialHikes = listOf(
         difficulty = "Easy",
         imageRes = com.hao.ui.R.drawable.tongariroalpinecrossing
     ),
-    Hike(
+    LocalTrack(
         assetId = "93ed7d16-981f-4cf4-b015-2c3532b2a42e",
         name = "Rob Roy Glacier",
         location = "Mt Aspiring",
@@ -141,7 +141,7 @@ private val initialHikes = listOf(
         difficulty = "Moderate",
         imageRes = com.hao.ui.R.drawable.royspeak
     ),
-    Hike(
+    LocalTrack(
         assetId = "26f7e543-e3bf-48a3-a174-618bf790f6df",
         name = "Milford Track",
         location = "Fiordland",
@@ -150,7 +150,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.milford
     ),
-    Hike(
+    LocalTrack(
         assetId = "69bc21c3-4b8b-4fb2-ac98-2ac21d38cc25",
         name = "Routeburn Track",
         location = "Fiordland/Mt Aspiring",
@@ -159,7 +159,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.routeburn
     ),
-    Hike(
+    LocalTrack(
         assetId = "7b58932a-9f97-4092-b0fc-7a1c0777d28c",
         name = "Kepler Track",
         location = "Fiordland",
@@ -168,7 +168,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.kepler
     ),
-    Hike(
+    LocalTrack(
         assetId = "3df63c1e-5917-46f1-9516-dfdb75b58f42",
         name = "Rakiura Track",
         location = "Stewart Island",
@@ -177,7 +177,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.rakiura
     ),
-    Hike(
+    LocalTrack(
         assetId = "9943e482-ca33-4736-8b7a-a0199a2a4a0c",
         name = "Heaphy Track",
         location = "Kahurangi",
@@ -186,7 +186,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.heaphy
     ),
-    Hike(
+    LocalTrack(
         assetId = "a144cba2-2bea-411e-a4b8-023c828689d2",
         name = "Tongariro Northern Circuit",
         location = "Central Plateau",
@@ -195,7 +195,7 @@ private val initialHikes = listOf(
         difficulty = "Advanced",
         imageRes = com.hao.ui.R.drawable.tongariro
     ),
-    Hike(
+    LocalTrack(
         assetId = "114ff80d-12f4-4f0b-8384-103f0c8e6efc",
         name = "Abel Tasman Coast Track",
         location = "Abel Tasman",
@@ -204,7 +204,7 @@ private val initialHikes = listOf(
         difficulty = "Easy",
         imageRes = com.hao.ui.R.drawable.abel_tasman
     ),
-    Hike(
+    LocalTrack(
         assetId = "515b197a-9138-40e7-b099-03b2cd121941",
         name = "Lake Waikaremoana Track",
         location = "Te Urewera",
@@ -213,7 +213,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.waikaremoana
     ),
-    Hike(
+    LocalTrack(
         assetId = "ebcd19a9-125f-42fa-9c72-5ec8e19de8e3",
         name = "Whanganui Journey",
         location = "Whanganui River",
@@ -222,7 +222,7 @@ private val initialHikes = listOf(
         difficulty = "Easy",
         imageRes = com.hao.ui.R.drawable.whanganui
     ),
-    Hike(
+    LocalTrack(
         assetId = "c53005d1-c842-4e24-bade-48f61c977f31",
         name = "Paparoa Track",
         location = "West Coast",
@@ -231,7 +231,7 @@ private val initialHikes = listOf(
         difficulty = "Intermediate",
         imageRes = com.hao.ui.R.drawable.paparoa
     ),
-    Hike(
+    LocalTrack(
         assetId = "e089385c-a8c2-4cc7-bf40-cc94f52b4d48",
         name = "Hump Ridge Track",
         location = "Fiordland National Park, South Island",

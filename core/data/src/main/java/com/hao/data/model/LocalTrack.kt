@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "hikes")
-data class Hike(
+data class LocalTrack(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val assetId: String,

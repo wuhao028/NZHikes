@@ -30,13 +30,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 
-import com.hao.data.model.Hike
+import com.hao.data.model.LocalTrack
 
 @Composable
 fun HikeCardVertical(
-    hike: Hike,
-    onToggleFavorite: (Hike) -> Unit,
-    onClick: (Hike) -> Unit,
+    hike: LocalTrack,
+    onToggleFavorite: (LocalTrack) -> Unit,
+    onClick: (LocalTrack) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(

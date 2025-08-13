@@ -2,7 +2,7 @@ package com.hao.data.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.hao.data.data.model.Track
+import com.hao.data.data.model.RemoteTrack
 import com.hao.data.local.AppDatabase
 import com.hao.data.remote.ApiService
 import com.squareup.moshi.JsonAdapter
@@ -25,8 +25,8 @@ class TrackRepository private constructor(
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-    private val trackListType = Types.newParameterizedType(List::class.java, Track::class.java)
-    private val trackListAdapter: JsonAdapter<List<Track>> = moshi.adapter(trackListType)
+    private val trackListType = Types.newParameterizedType(List::class.java, RemoteTrack::class.java)
+    private val trackListAdapter: JsonAdapter<List<RemoteTrack>> = moshi.adapter(trackListType)
 
     suspend fun loadTracksFromAssets(context: Context): Boolean {
         return withContext(Dispatchers.IO) {
@@ -64,11 +64,11 @@ class TrackRepository private constructor(
         }
     }
 
-    fun getTracks(limit: Int = 20): Flow<List<Track>> {
+    fun getTracks(limit: Int = 20): Flow<List<RemoteTrack>> {
         return trackDao.getTracks(limit)
     }
 
-    fun searchTracks(query: String): Flow<List<Track>> {
+    fun searchTracks(query: String): Flow<List<RemoteTrack>> {
         return trackDao.searchTracks("%${query}%")
     }
 

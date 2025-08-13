@@ -3,7 +3,7 @@ package com.hao.explore
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hao.data.data.model.Track
+import com.hao.data.data.model.RemoteTrack
 import com.hao.data.data.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -23,8 +23,8 @@ class SearchViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _searchResults = MutableStateFlow<List<Track>>(emptyList())
-    val searchResults: StateFlow<List<Track>> = _searchResults
+    private val _searchResults = MutableStateFlow<List<RemoteTrack>>(emptyList())
+    val searchResults: StateFlow<List<RemoteTrack>> = _searchResults
 
     init {
         // Ensure local DB has data loaded from assets at least once
