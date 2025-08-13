@@ -13,8 +13,8 @@ import com.hao.data.data.converter.StringListConverter
 import com.hao.data.data.local.TrackDao
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
-import com.hao.data.model.LocalTrack
 import com.hao.data.model.Hut
+import com.hao.data.model.LocalTrack
 import com.hao.data.util.readJsonFromAssets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

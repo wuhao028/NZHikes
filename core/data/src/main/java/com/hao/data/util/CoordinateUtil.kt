@@ -1,6 +1,9 @@
 package com.hao.data.util
 
-import org.locationtech.proj4j.*
+import org.locationtech.proj4j.CRSFactory
+import org.locationtech.proj4j.CoordinateReferenceSystem
+import org.locationtech.proj4j.CoordinateTransformFactory
+import org.locationtech.proj4j.ProjCoordinate
 
 object CoordinateUtil {
 
@@ -16,11 +19,13 @@ object CoordinateUtil {
         )
 
         // WGS84
-        wgs84Projection = crsFactory.createFromParameters("WGS84", "+proj=longlat +datum=WGS84 +no_defs")
+        wgs84Projection =
+            crsFactory.createFromParameters("WGS84", "+proj=longlat +datum=WGS84 +no_defs")
     }
 
     fun nztmToWgs84(easting: Double, northing: Double): ProjCoordinate {
-        val transform = CoordinateTransformFactory().createTransform(nztmProjection, wgs84Projection)
+        val transform =
+            CoordinateTransformFactory().createTransform(nztmProjection, wgs84Projection)
         val result = ProjCoordinate()
         return transform.transform(ProjCoordinate(easting, northing), result)
     }

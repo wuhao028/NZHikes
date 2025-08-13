@@ -35,7 +35,8 @@ fun TripsScreen(
     Column(modifier = modifier) {
         TabRow(selectedTabIndex = tabIndex) {
             tabs.forEachIndexed { index, title ->
-                Tab(text = { Text(title) },
+                Tab(
+                    text = { Text(title) },
                     selected = tabIndex == index,
                     onClick = { tabIndex = index }
                 )
@@ -47,6 +48,7 @@ fun TripsScreen(
                 onToggleFavorite = viewModel::toggleFavorite,
                 onHikeClick = onHikeClick
             )
+
             1 -> DoneScreen(
                 hikes = doneHikes,
                 onHikeClick = onHikeClick,
@@ -69,12 +71,12 @@ fun FavouriteScreen(
         items(hikes) { hike ->
             // For now, onToggleFavorite is empty, as we might not want to unfavorite from this screen.
             // Or we could pass the viewModel's toggle function here.
-                        HikeCardVertical(
-                            hike = hike,
-                            onToggleFavorite = onToggleFavorite,
-                            onClick = onHikeClick,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+            HikeCardVertical(
+                hike = hike,
+                onToggleFavorite = onToggleFavorite,
+                onClick = onHikeClick,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

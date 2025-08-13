@@ -13,7 +13,8 @@ object CoordinateConverter {
     // NZTM2000 Projection
     private const val NZTM_PROJ4_PARAMS =
         "+proj=tmerc +lat_0=0.0 +lon_0=173.0 +k=0.9996 +x_0=1600000.0 +y_0=10000000.0 +datum=WGS84 +units=m"
-    private val nztmCrs: CoordinateReferenceSystem = crsFactory.createFromParameters("NZTM", NZTM_PROJ4_PARAMS)
+    private val nztmCrs: CoordinateReferenceSystem =
+        crsFactory.createFromParameters("NZTM", NZTM_PROJ4_PARAMS)
 
     // WGS84 (Latitude/Longitude)
     private val wgs84Crs: CoordinateReferenceSystem = crsFactory.createFromName("EPSG:4326")

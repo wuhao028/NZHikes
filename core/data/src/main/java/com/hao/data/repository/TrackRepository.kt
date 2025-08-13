@@ -25,7 +25,8 @@ class TrackRepository private constructor(
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-    private val trackListType = Types.newParameterizedType(List::class.java, RemoteTrack::class.java)
+    private val trackListType =
+        Types.newParameterizedType(List::class.java, RemoteTrack::class.java)
     private val trackListAdapter: JsonAdapter<List<RemoteTrack>> = moshi.adapter(trackListType)
 
     suspend fun loadTracksFromAssets(context: Context): Boolean {

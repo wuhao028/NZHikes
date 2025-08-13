@@ -68,6 +68,7 @@ fun TrackDetailScreen(
                 CircularProgressIndicator()
             }
         }
+
         uiState.error != null -> {
             Column(
                 modifier = Modifier

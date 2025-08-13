@@ -1,13 +1,13 @@
 package com.hao.data.di
 
 import android.content.Context
+import com.hao.data.data.repository.TrackRepository
 import com.hao.data.local.AppDatabase
 import com.hao.data.local.CampsiteDao
 import com.hao.data.local.HikeDao
 import com.hao.data.local.HutDao
-import com.hao.data.repository.HikeRepository
-import com.hao.data.data.repository.TrackRepository
 import com.hao.data.remote.ApiService
+import com.hao.data.repository.HikeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

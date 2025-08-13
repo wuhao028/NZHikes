@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
-import com.hao.data.model.LocalTrack
 import com.hao.data.model.Hut
+import com.hao.data.model.LocalTrack
 
 @Composable
 fun HomeScreen(
