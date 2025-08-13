@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation("org.locationtech.proj4j:proj4j:1.2.1")
+    implementation(libs.proj4j)
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
@@ -60,7 +60,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     // Gson for JSON parsing
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     // Moshi for JSON parsing
     implementation(libs.moshi)
@@ -106,7 +106,7 @@ dependencies {
     coreLibraryDesugaring(libs.core.jdk.desugaring)
 
     implementation(libs.retrofit)
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0") // Using Moshi converter
+    implementation(libs.retrofit.converter.moshi) // Using Moshi converter
     implementation(libs.okhttp.logging)
 
     implementation(libs.compose.material.icons.core)
