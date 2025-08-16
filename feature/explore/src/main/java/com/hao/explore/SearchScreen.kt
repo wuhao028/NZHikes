@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +37,6 @@ import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
 import com.hao.explore.model.SearchResult
-import com.hao.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,7 +160,7 @@ private fun CampsiteSearchItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = campsite.name?:"",
+                    text = campsite.name ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -191,7 +189,7 @@ private fun HutSearchItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = hut.name?:"",
+                    text = hut.name ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )

@@ -6,13 +6,16 @@ import com.hao.data.model.Hut
 
 sealed class SearchResult {
     abstract val name: String
+
     data class TrackResult(val track: RemoteTrack) : SearchResult() {
         override val name: String = track.name
     }
-    data class CampsiteResult(val campsite: Campsite) : SearchResult(){
+
+    data class CampsiteResult(val campsite: Campsite) : SearchResult() {
         override val name: String = campsite.name ?: ""
     }
-    data class HutResult(val hut: Hut) : SearchResult(){
-        override val name: String = hut.name?:""
+
+    data class HutResult(val hut: Hut) : SearchResult() {
+        override val name: String = hut.name ?: ""
     }
 }

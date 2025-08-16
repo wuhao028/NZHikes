@@ -2,6 +2,7 @@ package com.hao.explore
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,13 +35,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -231,7 +227,7 @@ private fun CampsiteItem(campsite: Campsite) {
                 .padding(16.dp)
         ) {
             Text(
-                text = campsite.name?:"",
+                text = campsite.name ?: "",
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -248,7 +244,7 @@ private fun HutItem(hut: Hut) {
                 .padding(16.dp)
         ) {
             Text(
-                text = hut.name?:"",
+                text = hut.name ?: "",
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -258,7 +254,7 @@ private fun HutItem(hut: Hut) {
 
 @Composable
 fun SearchBar(
-    onSearchClick: () -> Unit, 
+    onSearchClick: () -> Unit,
     placeholder: String = "Search for a track",
     modifier: Modifier = Modifier
 ) {

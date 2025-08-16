@@ -22,7 +22,8 @@ class CampsiteRepository @Inject constructor(
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-    private val campsiteListType = Types.newParameterizedType(List::class.java, Campsite::class.java)
+    private val campsiteListType =
+        Types.newParameterizedType(List::class.java, Campsite::class.java)
     private val campsiteListAdapter: JsonAdapter<List<Campsite>> = moshi.adapter(campsiteListType)
 
     suspend fun loadCampsitesFromAssets(context: Context): Boolean {

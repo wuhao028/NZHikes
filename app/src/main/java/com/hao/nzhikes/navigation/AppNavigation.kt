@@ -76,7 +76,10 @@ fun AppNavigation() {
                     onItemClick = { result ->
                         when (result) {
                             is SearchResult.TrackResult -> {
-                                Log.d("AppNavigation", "Navigating to track: ${result.track.assetId}")
+                                Log.d(
+                                    "AppNavigation",
+                                    "Navigating to track: ${result.track.assetId}"
+                                )
                                 navController.navigate("track/${result.track.assetId}") {
                                     popUpTo(BottomNavItem.Home.route)
                                 }

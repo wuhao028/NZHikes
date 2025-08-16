@@ -1,12 +1,10 @@
 package com.hao.explore
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.SavedStateHandle
 import com.hao.data.data.repository.TrackRepository
-import com.hao.data.local.CampsiteDao
-import com.hao.data.local.HutDao
 import com.hao.data.repository.CampsiteRepository
 import com.hao.data.repository.HutRepository
 import com.hao.explore.model.SearchResult
@@ -56,17 +54,17 @@ class SearchViewModel @Inject constructor(
                                 .map { tracks ->
                                     tracks.map { SearchResult.TrackResult(it) }
                                 }
-                            
+
                             1 -> campsiteRepository.getAllCampsites()
                                 .map { campsites ->
                                     campsites.map { SearchResult.CampsiteResult(it) }
                                 }
-                            
+
                             2 -> hutRepository.searchHuts(query)
                                 .map { huts ->
                                     huts.map { SearchResult.HutResult(it) }
                                 }
-                            
+
                             else -> MutableStateFlow(emptyList())
                         }
                     }
