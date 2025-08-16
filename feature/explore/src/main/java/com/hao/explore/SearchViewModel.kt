@@ -3,43 +3,65 @@ package com.hao.explore
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hao.data.data.model.RemoteTrack
+import androidx.lifecycle.SavedStateHandle
 import com.hao.data.data.repository.TrackRepository
+import com.hao.data.local.CampsiteDao
+import com.hao.data.local.HutDao
+import com.hao.explore.model.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val trackRepository: TrackRepository,
+    private val campsiteDao: CampsiteDao,
+    private val hutDao: HutDao,
+    private val savedStateHandle: SavedStateHandle,
     @ApplicationContext private val appContext: Context
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _searchResults = MutableStateFlow<List<RemoteTrack>>(emptyList())
-    val searchResults: StateFlow<List<RemoteTrack>> = _searchResults
+    private val _searchResults = MutableStateFlow<List<SearchResult>>(emptyList())
+    val searchResults: StateFlow<List<SearchResult>> = _searchResults
 
     init {
-        // Ensure local DB has data loaded from assets at least once
-        viewModelScope.launch {
-            runCatching { trackRepository.loadTracksFromAssets(appContext) }
-        }
+        // Ensure local DB has track data loaded from assets at least once, then start search flow
+        val searchType = savedStateHandle.get<Int>("searchType") ?: 0
 
         viewModelScope.launch {
+            // Load tracks if needed (no-op if already loaded)
+            trackRepository.loadTracksFromAssets(appContext)
+
             searchQuery
-                .debounce(300) // Add a debounce to avoid too many queries
+                .debounce(300)
                 .flatMapLatest { query ->
                     if (query.isBlank()) {
                         MutableStateFlow(emptyList())
                     } else {
-                        trackRepository.searchTracks(query)
+                        when (searchType) {
+                            0 -> trackRepository.searchTracks(query).map {
+                                it.map { track -> SearchResult.TrackResult(track) }
+                            }
+
+                            1 -> campsiteDao.searchCampsites(query).map {
+                                it.map { campsite -> SearchResult.CampsiteResult(campsite) }
+                            }
+
+                            2 -> hutDao.searchHuts(query).map {
+                                it.map { hut -> SearchResult.HutResult(hut) }
+                            }
+
+                            else -> MutableStateFlow(emptyList())
+                        }
                     }
                 }
                 .collect { results ->

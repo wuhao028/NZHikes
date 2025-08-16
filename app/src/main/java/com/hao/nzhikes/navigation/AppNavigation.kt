@@ -22,6 +22,7 @@ import androidx.navigation.navArgument
 import com.hao.explore.HomeScreen
 import com.hao.explore.SearchScreen
 import com.hao.explore.TrackDetailScreen
+import com.hao.explore.model.SearchResult
 import com.hao.me.MeScreen
 import com.hao.trips.TripsScreen
 
@@ -52,7 +53,9 @@ fun AppNavigation() {
             composable(BottomNavItem.Home.route) {
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding),
-                    onSearchClick = { navController.navigate(BottomNavItem.Search.route) },
+                    onSearchClick = { searchType ->
+                        navController.navigate("${BottomNavItem.Search.route}/$searchType")
+                    },
                     onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
                 )
             }
@@ -65,12 +68,27 @@ fun AppNavigation() {
             composable(BottomNavItem.Me.route) {
                 MeScreen()
             }
-            composable(BottomNavItem.Search.route) {
+            composable(
+                route = "${BottomNavItem.Search.route}/{searchType}",
+                arguments = listOf(navArgument("searchType") { type = NavType.IntType })
+            ) {
                 SearchScreen(
-                    onTrackClick = { id ->
-                        Log.d("AppNavigation", "Navigating to track: $id")
-                        navController.navigate("track/$id") {
-                            popUpTo(BottomNavItem.Home.route)
+                    onItemClick = { result ->
+                        when (result) {
+                            is SearchResult.TrackResult -> {
+                                Log.d("AppNavigation", "Navigating to track: ${result.track.assetId}")
+                                navController.navigate("track/${result.track.assetId}") {
+                                    popUpTo(BottomNavItem.Home.route)
+                                }
+                            }
+
+                            is SearchResult.CampsiteResult -> {
+                                // TODO: Not implemented yet
+                            }
+
+                            is SearchResult.HutResult -> {
+                                // TODO: Not implemented yet
+                            }
                         }
                     },
                     onCancel = { navController.popBackStack() }

@@ -28,11 +28,6 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _campsiteSearchQuery = MutableStateFlow("")
-    val campsiteSearchQuery: StateFlow<String> = _campsiteSearchQuery.asStateFlow()
-
-    private val _hutSearchQuery = MutableStateFlow("")
-    val hutSearchQuery: StateFlow<String> = _hutSearchQuery.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -40,21 +35,8 @@ class HomeViewModel @Inject constructor(
 
             val hikesFlow = hikeRepository.getAllHikes()
 
-            val campsitesFlow = _campsiteSearchQuery.flatMapLatest { query ->
-                if (query.isBlank()) {
-                    campsiteDao.getAllCampsites()
-                } else {
-                    campsiteDao.searchCampsites(query)
-                }
-            }
-
-            val hutsFlow = _hutSearchQuery.flatMapLatest { query ->
-                if (query.isBlank()) {
-                    hutDao.getAllHuts()
-                } else {
-                    hutDao.searchHuts(query)
-                }
-            }
+            val campsitesFlow = campsiteDao.getAllCampsites()
+            val hutsFlow = hutDao.getAllHuts()
 
             combine(hikesFlow, campsitesFlow, hutsFlow) { hikes, campsites, huts ->
                 val greatWalks = hikes.filter { it.duration.contains("days", ignoreCase = true) }
@@ -70,13 +52,6 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun onCampsiteSearchQueryChanged(query: String) {
-        _campsiteSearchQuery.value = query
-    }
-
-    fun onHutSearchQueryChanged(query: String) {
-        _hutSearchQuery.value = query
-    }
 
     fun toggleFavorite(hike: LocalTrack) {
         viewModelScope.launch {
@@ -98,8 +73,6 @@ data class HomeUiState(
     val greatWalks: List<LocalTrack> = emptyList(),
     val campsites: List<Campsite> = emptyList(),
     val huts: List<Hut> = emptyList(),
-    val campsiteSearchQuery: String = "",
-    val hutSearchQuery: String = "",
     val isLoading: Boolean = false,
     val error: String? = null
 )

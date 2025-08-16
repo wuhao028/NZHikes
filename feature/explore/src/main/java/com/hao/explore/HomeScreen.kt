@@ -47,7 +47,7 @@ import com.hao.data.model.LocalTrack
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onSearchClick: () -> Unit,
+    onSearchClick: (Int) -> Unit,
     onHikeClick: (LocalTrack) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -90,7 +90,22 @@ fun HomeScreen(
 
     Column {
         Spacer(modifier = Modifier.height(24.dp))
-        SearchBar(onSearchClick = onSearchClick)
+        Column {
+            // Search bar
+            val searchPlaceholder = when (selectedTabIndex) {
+                0 -> "Search for a track"
+                1 -> "Search for a campsite"
+                2 -> "Search for a hut"
+                else -> "Search"
+            }
+            SearchBar(
+                onSearchClick = { onSearchClick(selectedTabIndex) },
+                placeholder = searchPlaceholder,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -128,8 +143,8 @@ fun HomeScreen(
                 viewModel = viewModel
             )
 
-            1 -> CampsitesList(campsites = uiState.campsites, viewModel = viewModel)
-            2 -> HutsList(huts = uiState.huts, viewModel = viewModel)
+            1 -> CampsitesList(campsites = uiState.campsites)
+            2 -> HutsList(huts = uiState.huts)
         }
     }
 }
@@ -153,49 +168,25 @@ private fun TracksList(
 }
 
 @Composable
-private fun CampsitesList(campsites: List<Campsite>, viewModel: HomeViewModel) {
-    val searchQuery by viewModel.campsiteSearchQuery.collectAsState()
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { viewModel.onCampsiteSearchQueryChanged(it) },
-            label = { Text("Search Campsites") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(campsites) { campsite ->
-                CampsiteItem(campsite = campsite)
-            }
+private fun CampsitesList(campsites: List<Campsite>) {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(campsites) { campsite ->
+            CampsiteItem(campsite = campsite)
         }
     }
 }
 
 @Composable
-private fun HutsList(huts: List<Hut>, viewModel: HomeViewModel) {
-    val searchQuery by viewModel.hutSearchQuery.collectAsState()
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { viewModel.onHutSearchQueryChanged(it) },
-            label = { Text("Search Huts") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(huts) { hut ->
-                HutItem(hut = hut)
-            }
+private fun HutsList(huts: List<Hut>) {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(huts) { hut ->
+            HutItem(hut = hut)
         }
     }
 }
@@ -256,7 +247,11 @@ private fun HutItem(hut: Hut) {
 }
 
 @Composable
-fun SearchBar(onSearchClick: () -> Unit) {
+fun SearchBar(
+    onSearchClick: () -> Unit, 
+    placeholder: String = "Search for a track",
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = Modifier
             .padding(16.dp)
@@ -271,7 +266,7 @@ fun SearchBar(onSearchClick: () -> Unit) {
                 Icon(Icons.Default.Search, contentDescription = "Search Icon")
             },
             placeholder = {
-                Text(text = "Search for a track")
+                Text(text = placeholder)
             },
             colors = OutlinedTextFieldDefaults.colors(
                 disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),

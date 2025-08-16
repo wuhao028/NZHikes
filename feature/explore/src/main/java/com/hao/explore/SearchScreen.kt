@@ -29,12 +29,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hao.explore.model.SearchResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
-    onTrackClick: (String) -> Unit,
+    onItemClick: (SearchResult) -> Unit,
     onCancel: () -> Unit = {}
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -52,7 +53,7 @@ fun SearchScreen(
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = viewModel::onSearchQueryChanged,
-                        placeholder = { Text("Search for a track") },
+                        placeholder = { Text("Search...") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
@@ -72,18 +73,18 @@ fun SearchScreen(
         }
     ) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
-            items(searchResults) { track ->
+            items(searchResults) { result ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .clickable {
-                            Log.d("SearchScreen", "Track clicked: ${track.assetId}")
-                            onTrackClick(track.assetId)
+                            Log.d("SearchScreen", "Item clicked: ${result.name}")
+                            onItemClick(result)
                         }
                 ) {
                     Text(
-                        text = track.name,
+                        text = result.name,
                         modifier = Modifier.padding(16.dp),
                         style = MaterialTheme.typography.headlineSmall
                     )
