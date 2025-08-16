@@ -231,11 +231,10 @@ private fun CampsiteItem(campsite: Campsite) {
                 .padding(16.dp)
         ) {
             Text(
-                text = campsite.name,
+                text = campsite.name?:"",
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${campsite.facilities.joinToString(", ")}")
         }
     }
 }
@@ -249,11 +248,10 @@ private fun HutItem(hut: Hut) {
                 .padding(16.dp)
         ) {
             Text(
-                text = hut.name,
+                text = hut.name?:"",
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${hut.beds} beds • ${hut.facilities.joinToString(", ")}")
         }
     }
 }

@@ -7,6 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import com.hao.data.data.repository.TrackRepository
 import com.hao.data.local.CampsiteDao
 import com.hao.data.local.HutDao
+import com.hao.data.repository.CampsiteRepository
+import com.hao.data.repository.HutRepository
 import com.hao.explore.model.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,8 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val trackRepository: TrackRepository,
-    private val campsiteDao: CampsiteDao,
-    private val hutDao: HutDao,
+    private val campsiteRepository: CampsiteRepository,
+    private val hutRepository: HutRepository,
     private val savedStateHandle: SavedStateHandle,
     @ApplicationContext private val appContext: Context
 ) : ViewModel() {
@@ -34,32 +36,37 @@ class SearchViewModel @Inject constructor(
     val searchResults: StateFlow<List<SearchResult>> = _searchResults
 
     init {
-        // Ensure local DB has track data loaded from assets at least once, then start search flow
-        val searchType = savedStateHandle.get<Int>("searchType") ?: 0
-
+        // Ensure local DB has data loaded from assets at least once
         viewModelScope.launch {
-            // Load tracks if needed (no-op if already loaded)
+            // Load data if needed (no-op if already loaded)
             trackRepository.loadTracksFromAssets(appContext)
+            campsiteRepository.loadCampsitesFromAssets(appContext)
+            hutRepository.loadHutsFromAssets(appContext)
 
+            // Start search flow
             searchQuery
                 .debounce(300)
                 .flatMapLatest { query ->
                     if (query.isBlank()) {
                         MutableStateFlow(emptyList())
                     } else {
+                        val searchType = savedStateHandle.get<Int>("searchType") ?: 0
                         when (searchType) {
-                            0 -> trackRepository.searchTracks(query).map {
-                                it.map { track -> SearchResult.TrackResult(track) }
-                            }
-
-                            1 -> campsiteDao.searchCampsites(query).map {
-                                it.map { campsite -> SearchResult.CampsiteResult(campsite) }
-                            }
-
-                            2 -> hutDao.searchHuts(query).map {
-                                it.map { hut -> SearchResult.HutResult(hut) }
-                            }
-
+                            0 -> trackRepository.searchTracks("%$query%")
+                                .map { tracks ->
+                                    tracks.map { SearchResult.TrackResult(it) }
+                                }
+                            
+                            1 -> campsiteRepository.getAllCampsites()
+                                .map { campsites ->
+                                    campsites.map { SearchResult.CampsiteResult(it) }
+                                }
+                            
+                            2 -> hutRepository.searchHuts(query)
+                                .map { huts ->
+                                    huts.map { SearchResult.HutResult(it) }
+                                }
+                            
                             else -> MutableStateFlow(emptyList())
                         }
                     }

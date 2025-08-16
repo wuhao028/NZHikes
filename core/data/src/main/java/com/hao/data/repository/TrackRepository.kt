@@ -29,6 +29,7 @@ class TrackRepository private constructor(
         Types.newParameterizedType(List::class.java, RemoteTrack::class.java)
     private val trackListAdapter: JsonAdapter<List<RemoteTrack>> = moshi.adapter(trackListType)
 
+
     suspend fun loadTracksFromAssets(context: Context): Boolean {
         return withContext(Dispatchers.IO) {
             try {

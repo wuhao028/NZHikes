@@ -10,9 +10,9 @@ sealed class SearchResult {
         override val name: String = track.name
     }
     data class CampsiteResult(val campsite: Campsite) : SearchResult(){
-        override val name: String = campsite.name
+        override val name: String = campsite.name ?: ""
     }
     data class HutResult(val hut: Hut) : SearchResult(){
-        override val name: String = hut.name
+        override val name: String = hut.name?:""
     }
 }

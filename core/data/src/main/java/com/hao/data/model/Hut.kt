@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 data class Hut(
     @PrimaryKey
     val assetId: String,
-    val name: String,
-    val beds: Int,
-    val facilities: List<String>
+    val name: String? = "",
+    val status: String? = "",
+    val region: String? = "",
+    val y: Double = 0.0,
+    val x: Double = 0.0
 )

@@ -7,6 +7,9 @@ import androidx.room.PrimaryKey
 data class Campsite(
     @PrimaryKey
     val assetId: String,
-    val name: String,
-    val facilities: List<String>
+    val name: String? = "",
+    val status: String? = "",
+    val region: String? = "",
+    val y: Double = 0.0,
+    val x: Double = 0.0
 )

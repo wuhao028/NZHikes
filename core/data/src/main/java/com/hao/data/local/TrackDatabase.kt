@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [RemoteTrack::class, LocalTrack::class, Campsite::class, Hut::class],
-    version = 3,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(CoordinateListConverter::class, StringListConverter::class)

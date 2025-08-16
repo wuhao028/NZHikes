@@ -161,25 +161,13 @@ private fun CampsiteSearchItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_camping),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
                 Text(
-                    text = campsite.name,
+                    text = campsite.name?:"",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            if (campsite.facilities.isNotEmpty()) {
-                Text(
-                    text = "Facilities: ${campsite.facilities.joinToString(", ")}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
         }
     }
 }
@@ -202,30 +190,13 @@ private fun HutSearchItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_hut),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
                 Text(
-                    text = hut.name,
+                    text = hut.name?:"",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "${hut.beds} beds",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (hut.facilities.isNotEmpty()) {
-                Text(
-                    text = "Facilities: ${hut.facilities.joinToString(", ")}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
         }
     }
 }
