@@ -2,6 +2,7 @@ package com.hao.explore
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Hiking
@@ -24,10 +26,14 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,40 +58,73 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackDetailScreen(
-    viewModel: TrackDetailViewModel = hiltViewModel()
+    onBackClick: () -> Unit = {},
+    viewModel: TrackDetailViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    when {
-        uiState.loading -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        uiState.error != null -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Text(text = uiState.error ?: "Error", color = MaterialTheme.colorScheme.error)
-            }
-        }
-
-        else -> uiState.data?.let { data ->
-            TrackDetailContent(
-                data = data,
-                hike = uiState.hike,
-                onToggleFavorite = viewModel::toggleFavorite,
-                onToggleDone = viewModel::toggleDone
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = { 
+                    Text(
+                        text = uiState.data?.name ?: "Track Details",
+                        style = MaterialTheme.typography.titleMedium
+                    ) 
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             )
+        }
+    ) { padding ->
+        when {
+            uiState.loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            uiState.error != null -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(16.dp)
+                ) {
+                    Text(text = uiState.error ?: "Error", color = MaterialTheme.colorScheme.error)
+                }
+            }
+
+            else -> uiState.data?.let { data ->
+                TrackDetailContent(
+                    data = data,
+                    hike = uiState.hike,
+                    onToggleFavorite = viewModel::toggleFavorite,
+                    onToggleDone = viewModel::toggleDone,
+                    modifier = Modifier.padding(padding)
+                )
+            }
         }
     }
 }
@@ -95,10 +134,11 @@ fun TrackDetailContent(
     data: TrackDetailsResponse,
     hike: LocalTrack?,
     onToggleFavorite: (LocalTrack) -> Unit,
-    onToggleDone: (LocalTrack) -> Unit
+    onToggleDone: (LocalTrack) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         item {

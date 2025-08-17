@@ -110,7 +110,9 @@ fun AppNavigation() {
                 route = "track/{assetId}",
                 arguments = listOf(navArgument("assetId") { type = NavType.StringType })
             ) {
-                TrackDetailScreen()
+                TrackDetailScreen(
+                    onBackClick = { navController.navigateUp() }
+                )
             }
             
             composable(
