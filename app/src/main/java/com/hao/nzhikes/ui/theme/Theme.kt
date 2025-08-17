@@ -59,19 +59,25 @@ fun NZHikesTheme(
     // Define gradient colors based on theme
     val gradientColors = if (darkTheme) {
         listOf(
+            Color(0xFF0f0f23), // Very dark blue
             Color(0xFF1a1a2e), // Dark blue
             Color(0xFF16213e), // Darker blue
             Color(0xFF0f3460)  // Deep blue
         )
     } else {
         listOf(
-            Color(0xFF667eea), // Light blue
-            Color(0xFF764ba2), // Purple
-            Color(0xFFf093fb)  // Pink
+            Color(0xFF4facfe), // Light blue
+            Color(0xFF00f2fe), // Cyan
+            Color(0xFF667eea), // Blue
+            Color(0xFF764ba2)  // Purple
         )
     }
 
-    val gradientBrush = Brush.verticalGradient(colors = gradientColors)
+    val gradientBrush = Brush.verticalGradient(
+        colors = gradientColors,
+        startY = 0f,
+        endY = Float.POSITIVE_INFINITY
+    )
 
     MaterialTheme(
         colorScheme = colorScheme,
