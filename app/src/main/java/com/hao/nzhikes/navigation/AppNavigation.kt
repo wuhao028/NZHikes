@@ -58,7 +58,8 @@ fun AppNavigation() {
                     onSearchClick = { searchType ->
                         navController.navigate("${BottomNavItem.Search.route}/$searchType")
                     },
-                    onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
+                    onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") },
+                    onCampsiteClick = { campsite -> navController.navigate("campsite/${campsite.assetId}") }
                 )
             }
             composable(BottomNavItem.Trips.route) {

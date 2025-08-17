@@ -50,6 +50,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onSearchClick: (Int) -> Unit,
     onHikeClick: (LocalTrack) -> Unit,
+    onCampsiteClick: (Campsite) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -151,7 +152,7 @@ fun HomeScreen(
                 viewModel = viewModel
             )
 
-            1 -> CampsitesList(campsites = uiState.campsites)
+            1 -> CampsitesList(campsites = uiState.campsites, onCampsiteClick = onCampsiteClick)
             2 -> HutsList(huts = uiState.huts)
         }
     }
@@ -176,13 +177,13 @@ private fun TracksList(
 }
 
 @Composable
-private fun CampsitesList(campsites: List<Campsite>) {
+private fun CampsitesList(campsites: List<Campsite>, onCampsiteClick: (Campsite) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(campsites) { campsite ->
-            CampsiteItem(campsite = campsite)
+            CampsiteItem(campsite = campsite, onClick = { onCampsiteClick(campsite) })
         }
     }
 }
@@ -219,8 +220,10 @@ private fun TrackItem(track: RemoteTrack, onClick: () -> Unit) {
 }
 
 @Composable
-private fun CampsiteItem(campsite: Campsite) {
-    Card {
+private fun CampsiteItem(campsite: Campsite, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -231,6 +234,15 @@ private fun CampsiteItem(campsite: Campsite) {
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
+            campsite.region?.let { region ->
+                if (region.isNotBlank()) {
+                    Text(
+                        text = region,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
     }
 }

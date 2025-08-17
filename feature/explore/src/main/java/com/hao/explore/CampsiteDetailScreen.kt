@@ -474,7 +474,17 @@ private fun CampsiteMapCard(
             },
             update = { mapView ->
                 mapView.overlayManager.clear()
-                val geoPoint = GeoPoint(latitude, longitude)
+                
+                // Check if coordinates need conversion (if they're in NZTM format)
+                val geoPoint = if (latitude > 1000000 || longitude > 1000000) {
+                    // These look like NZTM coordinates, convert them
+                    val wgs84 = com.hao.data.util.CoordinateUtil.nztmToWgs84(longitude, latitude)
+                    GeoPoint(wgs84.y, wgs84.x)
+                } else {
+                    // These look like WGS84 coordinates, use them directly
+                    GeoPoint(latitude, longitude)
+                }
+                
                 val marker = Marker(mapView).apply {
                     position = geoPoint
                     title = name
