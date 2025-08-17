@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -19,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.hao.explore.CampsiteDetailScreen
 import com.hao.explore.HomeScreen
 import com.hao.explore.SearchScreen
 import com.hao.explore.TrackDetailScreen
@@ -86,7 +88,9 @@ fun AppNavigation() {
                             }
 
                             is SearchResult.CampsiteResult -> {
-                                // TODO: Not implemented yet
+                                navController.navigate("campsite/${result.campsite.assetId}") {
+                                    launchSingleTop = true
+                                }
                             }
 
                             is SearchResult.HutResult -> {
@@ -102,6 +106,16 @@ fun AppNavigation() {
                 arguments = listOf(navArgument("assetId") { type = NavType.StringType })
             ) {
                 TrackDetailScreen()
+            }
+            
+            composable(
+                route = "campsite/{assetId}",
+                arguments = listOf(navArgument("assetId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                CampsiteDetailScreen(
+                    onBackClick = { navController.navigateUp() },
+                    viewModel = hiltViewModel()
+                )
             }
         }
     }

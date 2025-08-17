@@ -9,6 +9,11 @@ interface ApiService {
     suspend fun getTrackDetails(
         @Path("assetId") assetId: String
     ): TrackDetailsResponse
+    
+    @GET("v2/campsites/{assetId}/detail")
+    suspend fun getCampsiteDetails(
+        @Path("assetId") assetId: String
+    ): CampsiteDetailsResponse
 
 }
 
