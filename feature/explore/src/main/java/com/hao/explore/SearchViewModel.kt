@@ -55,7 +55,7 @@ class SearchViewModel @Inject constructor(
                                     tracks.map { SearchResult.TrackResult(it) }
                                 }
 
-                            1 -> campsiteRepository.getAllCampsites()
+                            1 -> campsiteRepository.searchCampsites("%$query%")
                                 .map { campsites ->
                                     campsites.map { SearchResult.CampsiteResult(it) }
                                 }
