@@ -124,45 +124,6 @@ private fun CampsiteDetailContent(
                 value = access.joinToString(" ")
             )
         }
-
-        // Fees
-//        details.fees?.let { fees ->
-//            DetailItem(
-//                title = "Fees",
-//                value = fees
-//            )
-//        }
-//
-//        // Amenities
-//        val amenities = listOfNotNull(
-//            details.waterSupply?.let { "Water: $it" },
-//            details.toiletType?.let { "Toilets: $it" },
-//            details.fireCooking?.let { "Fire/Cooking: $it" },
-//            details.wheelchairAccess?.let { "Wheelchair Access: $it" },
-//            details.dogsAllowed?.let { "Dogs Allowed: ${if (it) "Yes" else "No"}" }
-//        )
-//
-//        if (amenities.isNotEmpty()) {
-//            DetailSection(
-//                title = "Amenities",
-//                items = amenities
-//            )
-//        }
-//
-//        // Contact & Additional Info
-//        details.contactInfo?.let { contact ->
-//            DetailItem(
-//                title = "Contact",
-//                value = contact
-//            )
-//        }
-//
-//        details.additionalInfo?.let { info ->
-//            DetailItem(
-//                title = "Additional Information",
-//                value = info
-//            )
-//        }
     }
 }
 
