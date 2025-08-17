@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.hao.data.local.HutDao
 import com.hao.data.model.Hut
+import com.hao.data.remote.ApiService
+import com.hao.data.remote.HutDetailsResponse
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -17,7 +19,8 @@ import javax.inject.Singleton
 
 @Singleton
 class HutRepository @Inject constructor(
-    private val hutDao: HutDao
+    private val hutDao: HutDao,
+    private val apiService: ApiService
 ) {
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -65,6 +68,15 @@ class HutRepository @Inject constructor(
 
     fun getAllHuts(): Flow<List<Hut>> {
         return hutDao.getAllHuts()
+    }
+
+    suspend fun getHutDetails(assetId: String): Result<HutDetailsResponse> {
+        return try {
+            val response = apiService.getHutDetails(assetId)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     companion object {

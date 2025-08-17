@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hao.explore.CampsiteDetailScreen
 import com.hao.explore.HomeScreen
+import com.hao.explore.HutDetailScreen
 import com.hao.explore.SearchScreen
 import com.hao.explore.TrackDetailScreen
 import com.hao.explore.model.SearchResult
@@ -59,7 +60,8 @@ fun AppNavigation() {
                         navController.navigate("${BottomNavItem.Search.route}/$searchType")
                     },
                     onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") },
-                    onCampsiteClick = { campsite -> navController.navigate("campsite/${campsite.assetId}") }
+                    onCampsiteClick = { campsite -> navController.navigate("campsite/${campsite.assetId}") },
+                    onHutClick = { hut -> navController.navigate("hut/${hut.assetId}") }
                 )
             }
             composable(BottomNavItem.Trips.route) {
@@ -95,7 +97,9 @@ fun AppNavigation() {
                             }
 
                             is SearchResult.HutResult -> {
-                                // TODO: Not implemented yet
+                                navController.navigate("hut/${result.hut.assetId}") {
+                                    launchSingleTop = true
+                                }
                             }
                         }
                     },
@@ -114,6 +118,16 @@ fun AppNavigation() {
                 arguments = listOf(navArgument("assetId") { type = NavType.StringType })
             ) { backStackEntry ->
                 CampsiteDetailScreen(
+                    onBackClick = { navController.navigateUp() },
+                    viewModel = hiltViewModel()
+                )
+            }
+            
+            composable(
+                route = "hut/{assetId}",
+                arguments = listOf(navArgument("assetId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                HutDetailScreen(
                     onBackClick = { navController.navigateUp() },
                     viewModel = hiltViewModel()
                 )

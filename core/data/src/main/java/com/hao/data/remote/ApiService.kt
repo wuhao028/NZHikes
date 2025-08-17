@@ -15,6 +15,11 @@ interface ApiService {
         @Path("assetId") assetId: String
     ): CampsiteDetailsResponse
 
+    @GET("v2/huts/{assetId}/detail")
+    suspend fun getHutDetails(
+        @Path("assetId") assetId: String
+    ): HutDetailsResponse
+
 }
 
 

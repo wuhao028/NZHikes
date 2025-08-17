@@ -51,6 +51,7 @@ fun HomeScreen(
     onSearchClick: (Int) -> Unit,
     onHikeClick: (LocalTrack) -> Unit,
     onCampsiteClick: (Campsite) -> Unit = {},
+    onHutClick: (Hut) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -153,7 +154,7 @@ fun HomeScreen(
             )
 
             1 -> CampsitesList(campsites = uiState.campsites, onCampsiteClick = onCampsiteClick)
-            2 -> HutsList(huts = uiState.huts)
+            2 -> HutsList(huts = uiState.huts, onHutClick = onHutClick)
         }
     }
 }
@@ -189,13 +190,13 @@ private fun CampsitesList(campsites: List<Campsite>, onCampsiteClick: (Campsite)
 }
 
 @Composable
-private fun HutsList(huts: List<Hut>) {
+private fun HutsList(huts: List<Hut>, onHutClick: (Hut) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(huts) { hut ->
-            HutItem(hut = hut)
+            HutItem(hut = hut, onClick = { onHutClick(hut) })
         }
     }
 }
@@ -248,8 +249,10 @@ private fun CampsiteItem(campsite: Campsite, onClick: () -> Unit) {
 }
 
 @Composable
-private fun HutItem(hut: Hut) {
-    Card {
+private fun HutItem(hut: Hut, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -260,6 +263,15 @@ private fun HutItem(hut: Hut) {
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
+            hut.region?.let { region ->
+                if (region.isNotBlank()) {
+                    Text(
+                        text = region,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
     }
 }
