@@ -1,14 +1,21 @@
 package com.hao.nzhikes.ui.theme
 
 import android.os.Build
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.hao.ui.theme.ThemeManager
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -34,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun NZHikesTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = ThemeManager.isDarkMode,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -49,9 +56,33 @@ fun NZHikesTheme(
         else -> LightColorScheme
     }
 
+    // Define gradient colors based on theme
+    val gradientColors = if (darkTheme) {
+        listOf(
+            Color(0xFF1a1a2e), // Dark blue
+            Color(0xFF16213e), // Darker blue
+            Color(0xFF0f3460)  // Deep blue
+        )
+    } else {
+        listOf(
+            Color(0xFF667eea), // Light blue
+            Color(0xFF764ba2), // Purple
+            Color(0xFFf093fb)  // Pink
+        )
+    }
+
+    val gradientBrush = Brush.verticalGradient(colors = gradientColors)
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+        typography = Typography
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(gradientBrush)
+        ) {
+            content()
+        }
+    }
 }
