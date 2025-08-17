@@ -20,23 +20,19 @@ import com.hao.ui.theme.ThemeManager
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,
+    background = Color.Transparent,
+    surface = Color.Transparent,
+    surfaceVariant = Color.Transparent
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiary = Pink40,
+    background = Color.Transparent,
+    surface = Color.Transparent,
+    surfaceVariant = Color.Transparent
 )
 
 @Composable
@@ -46,7 +42,7 @@ fun NZHikesTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
+    val baseColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -55,28 +51,35 @@ fun NZHikesTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+    
+    // Override background colors to be transparent so gradient shows through
+    val colorScheme = baseColorScheme.copy(
+        background = Color.Transparent,
+        surface = Color.Transparent,
+        surfaceVariant = Color.Transparent
+    )
 
     // Define gradient colors based on theme
     val gradientColors = if (darkTheme) {
         listOf(
-            Color(0xFF0f0f23), // Very dark blue
-            Color(0xFF1a1a2e), // Dark blue
-            Color(0xFF16213e), // Darker blue
-            Color(0xFF0f3460)  // Deep blue
+            Color(0xFF0B1426), // Very dark navy
+            Color(0xFF1E3A8A), // Dark blue
+            Color(0xFF3730A3), // Indigo
+            Color(0xFF581C87)  // Purple
         )
     } else {
         listOf(
-            Color(0xFF4facfe), // Light blue
-            Color(0xFF00f2fe), // Cyan
-            Color(0xFF667eea), // Blue
-            Color(0xFF764ba2)  // Purple
+            Color(0xFFE0F2FE), // Very light blue
+            Color(0xFFBAE6FD), // Light blue
+            Color(0xFF7DD3FC), // Medium blue
+            Color(0xFF38BDF8)  // Soft blue
         )
     }
 
     val gradientBrush = Brush.verticalGradient(
         colors = gradientColors,
         startY = 0f,
-        endY = Float.POSITIVE_INFINITY
+        endY = 1000f
     )
 
     MaterialTheme(

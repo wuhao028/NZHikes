@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Scaffold
+import com.hao.ui.theme.ThemeManager
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -145,7 +147,17 @@ fun BottomNavBar(navController: NavHostController) {
         BottomNavItem.Trips,
         BottomNavItem.Me
     )
-    NavigationBar {
+    
+    // Get the last gradient color based on current theme
+    val lastGradientColor = if (ThemeManager.isDarkMode) {
+        Color(0xFF581C87) // Dark mode last color (Purple)
+    } else {
+        Color(0xFF38BDF8) // Light mode last color (Soft blue)
+    }
+    
+    NavigationBar(
+        containerColor = lastGradientColor.copy(alpha = 0.9f)
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
