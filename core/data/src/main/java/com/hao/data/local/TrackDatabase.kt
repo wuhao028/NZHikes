@@ -66,13 +66,13 @@ abstract class AppDatabase : RoomDatabase() {
         private suspend fun prePopulate(context: Context, database: AppDatabase) {
             val gson = Gson()
             // Pre-populate campsites
-            val campsiteJson = readJsonFromAssets(context, "allcampsites.json")
+            val campsiteJson = readJsonFromAssets(context, "allCampsites.json")
             val campsiteType = object : TypeToken<List<Campsite>>() {}.type
             val campsites: List<Campsite> = gson.fromJson(campsiteJson, campsiteType)
             database.campsiteDao().insertAll(campsites)
 
             // Pre-populate huts
-            val hutJson = readJsonFromAssets(context, "allhuts.json")
+            val hutJson = readJsonFromAssets(context, "allHuts.json")
             val hutType = object : TypeToken<List<Hut>>() {}.type
             val huts: List<Hut> = gson.fromJson(hutJson, hutType)
             database.hutDao().insertAll(huts)
