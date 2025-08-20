@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Scaffold
 import com.hao.ui.theme.ThemeManager
@@ -152,7 +153,7 @@ fun BottomNavBar(navController: NavHostController) {
     val lastGradientColor = if (ThemeManager.isDarkMode) {
         Color(0xFF581C87) // Dark mode last color (Purple)
     } else {
-        Color(0xFFBAE6FD) // Light mode last color (Soft blue)
+        Color(0xFF2E7D32) // Light mode last color (Soft blue)
     }
     
     NavigationBar(
@@ -174,7 +175,14 @@ fun BottomNavBar(navController: NavHostController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    unselectedIconColor = Color.White,
+                    selectedTextColor = Color.White,
+                    unselectedTextColor = Color.White,
+                    indicatorColor = Color.Transparent
+                )
             )
         }
     }

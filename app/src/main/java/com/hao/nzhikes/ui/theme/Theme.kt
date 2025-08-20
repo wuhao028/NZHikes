@@ -64,6 +64,9 @@ fun NZHikesTheme(
         listOf(
             Color(0xFF0B1426), // Very dark navy
             Color(0xFF1E3A8A), // Dark blue
+            Color(0xFF1E3A8A), // Dark blue
+            Color(0xFF1E3A8A), // Dark blue
+            Color(0xFF1E3A8A), // Dark blue
             Color(0xFF3730A3), // Indigo
             Color(0xFF581C87)  // Purple
         )
@@ -71,15 +74,18 @@ fun NZHikesTheme(
         listOf(
             Color(0xFFFFFF),
             Color(0xFFFFFF),
-            Color(0xFFE0F2FE),
-            Color(0xFFBAE6FD)
+            Color(0xFFFFFF),
+            Color(0xFFFFFF),
+            Color(0xFFFFFF),
+            Color(0xFF4CAF50),
+            Color(0xFF2E7D32)
         )
     }
 
     val gradientBrush = Brush.verticalGradient(
         colors = gradientColors,
         startY = 0f,
-        endY = 1000f
+        endY = Float.POSITIVE_INFINITY
     )
 
     MaterialTheme(
