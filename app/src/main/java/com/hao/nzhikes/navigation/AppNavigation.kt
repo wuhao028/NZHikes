@@ -152,7 +152,7 @@ fun BottomNavBar(navController: NavHostController) {
     val lastGradientColor = if (ThemeManager.isDarkMode) {
         Color(0xFF581C87) // Dark mode last color (Purple)
     } else {
-        Color(0xFF38BDF8) // Light mode last color (Soft blue)
+        Color(0xFFBAE6FD) // Light mode last color (Soft blue)
     }
     
     NavigationBar(

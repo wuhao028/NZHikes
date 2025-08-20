@@ -69,10 +69,10 @@ fun NZHikesTheme(
         )
     } else {
         listOf(
-            Color(0xFFE0F2FE), // Very light blue
-            Color(0xFFBAE6FD), // Light blue
-            Color(0xFF7DD3FC), // Medium blue
-            Color(0xFF38BDF8)  // Soft blue
+            Color(0xFFFFFF),
+            Color(0xFFFFFF),
+            Color(0xFFE0F2FE),
+            Color(0xFFBAE6FD)
         )
     }
 
