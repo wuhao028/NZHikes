@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hao.ui.theme.ThemeManager
@@ -64,7 +65,11 @@ private fun ProfileCard() {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
+            containerColor = if (ThemeManager.isDarkMode) {
+                Color(0xFF2A2A2A).copy(alpha = 0.9f) // 深色模式下的浅灰色背景
+            } else {
+                Color(0xFFF8F9FA).copy(alpha = 0.95f) // 浅色模式下的浅色背景
+            }
         )
     ) {
         Column(
@@ -112,7 +117,11 @@ private fun SettingsCard() {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
+            containerColor = if (ThemeManager.isDarkMode) {
+                Color(0xFF2A2A2A).copy(alpha = 0.9f) 
+            } else {
+                Color(0xFFF8F9FA).copy(alpha = 0.95f) 
+            }
         )
     ) {
         Column(
