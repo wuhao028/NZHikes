@@ -117,18 +117,12 @@ fun HomeScreen(
         ) {
             tabs.forEachIndexed { index, title ->
                 val isSelected = selectedTabIndex == index
-                val backgroundColor = if (isSelected) {
-                    MaterialTheme.colorScheme.primaryContainer
-                } else {
-                    MaterialTheme.colorScheme.surface
-                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize()
-                        .background(backgroundColor)
                         .clickable { selectedTabIndex = index }
                 ) {
                     Image(
@@ -139,8 +133,15 @@ fun HomeScreen(
                     )
                     Text(
                         text = title,
-                        color = if (selectedTabIndex == index) Color.Black else MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(2.dp)
+                            .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
                     )
                 }
             }
