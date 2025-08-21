@@ -37,10 +37,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hao.ui.theme.ThemeManager
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hao.data.repository.HikeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
+import androidx.compose.runtime.collectAsState
+
+@HiltViewModel
+class MeViewModel @Inject constructor(
+    private val hikeRepository: HikeRepository
+) : ViewModel() {
+    val favoriteCount: StateFlow<Int> = hikeRepository.getFavoriteHikes().map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    val doneCount: StateFlow<Int> = hikeRepository.getDoneHikes().map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+}
 
 @Composable
 fun MeScreen() {
     val scrollState = rememberScrollState()
+    val viewModel: MeViewModel = hiltViewModel()
+    val favoriteCount by viewModel.favoriteCount.collectAsState()
+    val doneCount by viewModel.doneCount.collectAsState()
     
     Column(
         modifier = Modifier
@@ -50,10 +74,8 @@ fun MeScreen() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Profile Section
         ProfileCard()
-        
-        // Settings Section
+        StatsCard(favoriteCount = favoriteCount, doneCount = doneCount)
         SettingsCard()
     }
 }
@@ -227,5 +249,52 @@ private fun AppInfoSection() {
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+@Composable
+private fun StatsCard(favoriteCount: Int, doneCount: Int) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (ThemeManager.isDarkMode) {
+                Color(0xFF2A2A2A).copy(alpha = 0.9f)
+            } else {
+                Color(0xFFF8F9FA).copy(alpha = 0.95f)
+            }
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(48.dp)
+            )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = "Favourites $favoriteCount",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Completed $doneCount",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
