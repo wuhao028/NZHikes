@@ -11,6 +11,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -33,6 +35,9 @@ private val LightColorScheme = lightColorScheme(
     surface = Color.Transparent,
     surfaceVariant = Color.Transparent
 )
+
+// CompositionLocal for theme state
+val LocalThemeState = staticCompositionLocalOf { false }
 
 @Composable
 fun NZHikesTheme(
@@ -87,21 +92,18 @@ fun NZHikesTheme(
         endY = Float.POSITIVE_INFINITY
     )
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(gradientBrush)
+    CompositionLocalProvider(LocalThemeState provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography
         ) {
-            content()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(gradientBrush)
+            ) {
+                content()
+            }
         }
     }
-}
-
-// Global theme state for easy access
-object GlobalThemeState {
-    var isDarkMode: Boolean = false
 }

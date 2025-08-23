@@ -6,13 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import com.hao.nzhikes.navigation.AppNavigation
-import com.hao.nzhikes.ui.theme.GlobalThemeState
 import com.hao.nzhikes.ui.theme.NZHikesTheme
 import com.hao.ui.theme.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,10 +73,6 @@ private fun MainContent(
     onInitialized: () -> Unit
 ) {
     val isDarkMode by themeManager.darkModeFlow.collectAsState(initial = false)
-    
-    LaunchedEffect(isDarkMode) {
-        GlobalThemeState.isDarkMode = isDarkMode
-    }
     
     LaunchedEffect(isInitialized) {
         if (isInitialized) {

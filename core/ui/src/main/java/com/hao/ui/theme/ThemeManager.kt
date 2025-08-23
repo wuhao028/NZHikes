@@ -33,7 +33,8 @@ class ThemeManager @Inject constructor(
 
     val darkModeFlow: Flow<Boolean> = context.dataStore.data
         .catch { exception ->
-            throw exception
+            if (exception is IOException) {
+            }
         }
         .map { preferences ->
             preferences[ThemePreferencesKeys.DARK_MODE_KEY] ?: false
