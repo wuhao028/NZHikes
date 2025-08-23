@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.hao.ui.theme.ThemeManager
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -37,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun NZHikesTheme(
-    darkTheme: Boolean = ThemeManager.isDarkMode,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -100,4 +99,9 @@ fun NZHikesTheme(
             content()
         }
     }
+}
+
+// Global theme state for easy access
+object GlobalThemeState {
+    var isDarkMode: Boolean = false
 }

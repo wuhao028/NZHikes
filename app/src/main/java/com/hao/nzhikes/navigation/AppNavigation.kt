@@ -8,10 +8,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Scaffold
-import com.hao.ui.theme.ThemeManager
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -31,6 +31,7 @@ import com.hao.explore.TrackDetailScreen
 import com.hao.explore.model.SearchResult
 import com.hao.me.MeScreen
 import com.hao.trips.TripsScreen
+import com.hao.nzhikes.ui.theme.GlobalThemeState
 
 @Composable
 fun AppNavigation() {
@@ -150,7 +151,7 @@ fun BottomNavBar(navController: NavHostController) {
     )
     
     // Get the last gradient color based on current theme
-    val lastGradientColor = if (ThemeManager.isDarkMode) {
+    val lastGradientColor = if (GlobalThemeState.isDarkMode) {
         Color(0xFF581C87) // Dark mode last color (Purple)
     } else {
         Color(0xFF2E7D32) // Light mode last color (Soft blue)

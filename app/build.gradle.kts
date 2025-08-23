@@ -83,6 +83,9 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+    // DataStore for preferences
+    implementation(libs.androidx.datastore.preferences)
+
     // Moshi for JSON parsing
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
