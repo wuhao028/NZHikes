@@ -154,8 +154,17 @@ fun HomeScreen(
                 viewModel = viewModel
             )
 
-            1 -> CampsitesList(campsites = uiState.campsites, onCampsiteClick = onCampsiteClick)
-            2 -> HutsList(huts = uiState.huts, onHutClick = onHutClick)
+            1 -> CampsitesList(
+                campsites = uiState.campsites,
+                listState = listState,
+                onCampsiteClick = onCampsiteClick
+            )
+
+            2 -> HutsList(
+                huts = uiState.huts,
+                listState = listState,
+                onHutClick = onHutClick
+            )
         }
     }
 }
@@ -179,8 +188,13 @@ private fun TracksList(
 }
 
 @Composable
-private fun CampsitesList(campsites: List<Campsite>, onCampsiteClick: (Campsite) -> Unit) {
+private fun CampsitesList(
+    campsites: List<Campsite>,
+    listState: LazyListState,
+    onCampsiteClick: (Campsite) -> Unit
+) {
     LazyColumn(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -191,8 +205,13 @@ private fun CampsitesList(campsites: List<Campsite>, onCampsiteClick: (Campsite)
 }
 
 @Composable
-private fun HutsList(huts: List<Hut>, onHutClick: (Hut) -> Unit) {
+private fun HutsList(
+    huts: List<Hut>,
+    listState: LazyListState,
+    onHutClick: (Hut) -> Unit
+) {
     LazyColumn(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
