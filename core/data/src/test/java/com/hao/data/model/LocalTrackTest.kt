@@ -14,7 +14,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.0,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -33,7 +34,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.0,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -52,7 +54,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = -1.0,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -72,6 +75,7 @@ class LocalTrackTest {
             distanceKm = 5.0,
             duration = "2 hours",
             difficulty = "Easy",
+            imageRes = 0,
             isFavorite = false
         )
 
@@ -95,6 +99,7 @@ class LocalTrackTest {
             distanceKm = 5.0,
             duration = "2 hours",
             difficulty = "Easy",
+            imageRes = 0,
             isDone = false
         )
 
@@ -117,7 +122,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 0.5,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -136,7 +142,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.5,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -155,7 +162,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 15.7,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -174,7 +182,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.0,
             duration = "2 hours",
-            difficulty = "Easy"
+            difficulty = "Easy",
+            imageRes = 0
         )
 
         // When
@@ -193,7 +202,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.0,
             duration = "2 hours",
-            difficulty = "Medium"
+            difficulty = "Medium",
+            imageRes = 0
         )
 
         // When
@@ -212,7 +222,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.0,
             duration = "2 hours",
-            difficulty = "Hard"
+            difficulty = "Hard",
+            imageRes = 0
         )
 
         // When
@@ -231,7 +242,8 @@ class LocalTrackTest {
             location = "Test Location",
             distanceKm = 5.0,
             duration = "2 hours",
-            difficulty = "Unknown"
+            difficulty = "Unknown",
+            imageRes = 0
         )
 
         // When
@@ -242,22 +254,27 @@ class LocalTrackTest {
     }
 
     @Test
-    fun `createDefault should create track with default values`() {
+    fun `createDefault should create track with provided values`() {
         // Given
         val assetId = "test-asset-id"
         val name = "Test Track"
+        val location = "Test Location"
+        val distanceKm = 5.0
+        val duration = "2h"
+        val difficulty = "Easy"
+        val imageRes = 0
 
         // When
-        val track = LocalTrack.createDefault(assetId, name)
+        val track = LocalTrack.createDefault(assetId, name, location, distanceKm, duration, difficulty, imageRes)
 
         // Then
         assertEquals(assetId, track.assetId)
         assertEquals(name, track.name)
-        assertEquals("", track.location)
-        assertEquals(0.0, track.distanceKm, 0.01)
-        assertEquals("", track.duration)
-        assertEquals("", track.difficulty)
-        assertEquals(0, track.imageRes)
+        assertEquals(location, track.location)
+        assertEquals(distanceKm, track.distanceKm, 0.01)
+        assertEquals(duration, track.duration)
+        assertEquals(difficulty, track.difficulty)
+        assertEquals(imageRes, track.imageRes)
         assertFalse(track.isFavorite)
         assertFalse(track.isDone)
     }

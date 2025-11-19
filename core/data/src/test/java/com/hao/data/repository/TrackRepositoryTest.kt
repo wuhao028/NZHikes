@@ -1,0 +1,190 @@
+package com.hao.data.data.repository
+
+import android.content.Context
+import com.hao.data.data.model.RemoteTrack
+import com.hao.data.local.AppDatabase
+import com.hao.data.remote.ApiService
+import com.hao.data.remote.TrackDetailsResponse
+import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.*
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import java.io.IOException
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class TrackRepositoryTest {
+
+    private lateinit var trackRepository: TrackRepository
+    private lateinit var mockDatabase: AppDatabase
+    private lateinit var mockApiService: ApiService
+    private lateinit var mockTrackDao: com.hao.data.data.local.TrackDao
+    private lateinit var mockContext: Context
+    private val testDispatcher = StandardTestDispatcher()
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        mockDatabase = mockk<AppDatabase>(relaxed = true)
+        mockApiService = mockk<ApiService>(relaxed = true)
+        mockTrackDao = mockk<com.hao.data.data.local.TrackDao>(relaxed = true)
+        mockContext = mockk<Context>(relaxed = true)
+        
+        every { mockDatabase.trackDao() } returns mockTrackDao
+        
+        // Reset singleton instance
+        val companion = TrackRepository::class.java.getDeclaredField("INSTANCE")
+        companion.isAccessible = true
+        companion.set(null, null)
+        
+        trackRepository = TrackRepository.getInstance(mockDatabase, mockApiService)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        // Reset singleton instance
+        val companion = TrackRepository::class.java.getDeclaredField("INSTANCE")
+        companion.isAccessible = true
+        companion.set(null, null)
+    }
+
+    @Test
+    fun `getTracks should return flow from dao`() = runTest {
+        // Given
+        val testTracks = listOf(
+            RemoteTrack(
+                assetId = "1",
+                name = "Track 1",
+                region = listOf("Region 1"),
+                x = 174.0,
+                y = -41.0,
+                line = listOf(listOf(listOf(174.0, -41.0)))
+            )
+        )
+        coEvery { mockTrackDao.getTracks(20) } returns flowOf(testTracks)
+
+        // When
+        val result = trackRepository.getTracks(20)
+        val collected = mutableListOf<List<RemoteTrack>>()
+        val job = launch {
+            result.collect { collected.add(it) }
+        }
+        advanceUntilIdle()
+        job.cancel()
+
+        // Then
+        assertTrue(collected.isNotEmpty())
+        assertEquals(testTracks, collected.last())
+        coVerify { mockTrackDao.getTracks(20) }
+    }
+
+    @Test
+    fun `searchTracks should return flow from dao`() = runTest {
+        // Given
+        val testTracks = listOf(
+            RemoteTrack(
+                assetId = "1",
+                name = "Mountain Track",
+                region = listOf("Region 1"),
+                x = 174.0,
+                y = -41.0,
+                line = listOf(listOf(listOf(174.0, -41.0)))
+            )
+        )
+        coEvery { mockTrackDao.searchTracks(any()) } returns flowOf(testTracks)
+
+        // When
+        val result = trackRepository.searchTracks("Mountain")
+        val collected = mutableListOf<List<RemoteTrack>>()
+        val job = launch {
+            result.collect { collected.add(it) }
+        }
+        advanceUntilIdle()
+        job.cancel()
+
+        // Then
+        assertTrue(collected.isNotEmpty())
+        assertEquals(testTracks, collected.last())
+        coVerify { mockTrackDao.searchTracks("%Mountain%") }
+    }
+
+    @Test
+    fun `getTrackDetails should return success result`() = runTest {
+        // Given
+        val testDetails = TrackDetailsResponse(
+            assetId = "1",
+            name = "Test Track",
+            introduction = "Test Introduction",
+            introductionThumbnail = null,
+            distance = "10km",
+            walkDuration = "4h",
+            walkTrackCategory = listOf("Standard"),
+            locationString = "Test Location",
+            region = listOf("Test Region"),
+            line = listOf(listOf(listOf(174.0, -41.0)))
+        )
+        coEvery { mockApiService.getTrackDetails("1") } returns testDetails
+
+        // When
+        val result = trackRepository.getTrackDetails("1")
+
+        // Then
+        assertTrue(result.isSuccess)
+        assertEquals(testDetails, result.getOrNull())
+        coVerify { mockApiService.getTrackDetails("1") }
+    }
+
+    @Test
+    fun `getTrackDetails should return failure result on exception`() = runTest {
+        // Given
+        val exception = Exception("Network error")
+        coEvery { mockApiService.getTrackDetails("1") } throws exception
+
+        // When
+        val result = trackRepository.getTrackDetails("1")
+
+        // Then
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
+    }
+
+    @Test
+    fun `loadTracksFromAssets should return true when data already loaded`() = runTest {
+        // Given
+        coEvery { mockTrackDao.getTrackCount() } returns 10
+        val mockAssets = mockk<android.content.res.AssetManager>(relaxed = true)
+        every { mockContext.assets } returns mockAssets
+
+        // When
+        val result = trackRepository.loadTracksFromAssets(mockContext)
+
+        // Then
+        assertTrue(result)
+        coVerify { mockTrackDao.getTrackCount() }
+        coVerify(exactly = 0) { mockTrackDao.insertTracks(any()) }
+    }
+
+    @Test
+    fun `loadTracksFromAssets should return false on IOException`() = runTest {
+        // Given
+        coEvery { mockTrackDao.getTrackCount() } returns 0
+        val mockAssets = mockk<android.content.res.AssetManager>(relaxed = true)
+        every { mockContext.assets } returns mockAssets
+        every { mockAssets.open("allTracks.json") } throws IOException("File not found")
+
+        // When
+        val result = trackRepository.loadTracksFromAssets(mockContext)
+
+        // Then
+        assertFalse(result)
+        coVerify { mockTrackDao.getTrackCount() }
+        coVerify(exactly = 0) { mockTrackDao.insertTracks(any()) }
+    }
+}
+

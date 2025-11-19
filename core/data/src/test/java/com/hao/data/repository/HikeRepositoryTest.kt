@@ -6,6 +6,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.*
@@ -35,8 +36,8 @@ class HikeRepositoryTest {
     fun `getAllHikes should return flow of hikes from dao`() = runTest {
         // Given
         val testHikes = listOf(
-            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy"),
-            LocalTrack(assetId = "2", name = "Hike 2", location = "Location 2", distanceKm = 10.0, duration = "4h", difficulty = "Medium")
+            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0),
+            LocalTrack(assetId = "2", name = "Hike 2", location = "Location 2", distanceKm = 10.0, duration = "4h", difficulty = "Medium", imageRes = 0)
         )
         coEvery { mockHikeDao.getAllHikes() } returns flowOf(testHikes)
 
@@ -54,7 +55,7 @@ class HikeRepositoryTest {
     fun `getFavoriteHikes should return flow of favorite hikes from dao`() = runTest {
         // Given
         val testHikes = listOf(
-            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", isFavorite = true)
+            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0, isFavorite = true)
         )
         coEvery { mockHikeDao.getFavoriteHikes() } returns flowOf(testHikes)
 
@@ -72,7 +73,7 @@ class HikeRepositoryTest {
     fun `getDoneHikes should return flow of done hikes from dao`() = runTest {
         // Given
         val testHikes = listOf(
-            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", isDone = true)
+            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0, isDone = true)
         )
         coEvery { mockHikeDao.getDoneHikes() } returns flowOf(testHikes)
 
@@ -87,36 +88,38 @@ class HikeRepositoryTest {
     }
 
     @Test
-    fun `getHikeById should return hike from dao`() = runTest {
+    fun `getHikeByAssetId should return hike from dao`() = runTest {
         // Given
-        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy")
-        coEvery { mockHikeDao.getHikeById("1") } returns testHike
+        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0)
+        coEvery { mockHikeDao.getHikeByAssetId("1") } returns testHike
 
         // When
-        val result = hikeRepository.getHikeById("1")
+        val result = hikeRepository.getHikeByAssetId("1")
 
         // Then
         assertEquals(testHike, result)
-        coVerify { mockHikeDao.getHikeById("1") }
+        coVerify { mockHikeDao.getHikeByAssetId("1") }
     }
 
     @Test
-    fun `insertHike should call dao insert method`() = runTest {
+    fun `insertAll should call dao insertAll method`() = runTest {
         // Given
-        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy")
-        coEvery { mockHikeDao.insertHike(testHike) } just Runs
+        val testHikes = listOf(
+            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0)
+        )
+        coEvery { mockHikeDao.insertAll(testHikes) } just Runs
 
         // When
-        hikeRepository.insertHike(testHike)
+        hikeRepository.insertAll(testHikes)
 
         // Then
-        coVerify { mockHikeDao.insertHike(testHike) }
+        coVerify { mockHikeDao.insertAll(testHikes) }
     }
 
     @Test
     fun `updateHike should call dao update method`() = runTest {
         // Given
-        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy")
+        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0)
         coEvery { mockHikeDao.updateHike(testHike) } just Runs
 
         // When
@@ -127,75 +130,131 @@ class HikeRepositoryTest {
     }
 
     @Test
-    fun `deleteHike should call dao delete method`() = runTest {
+    fun `insertAll should throw exception for invalid hikes`() = runTest {
         // Given
-        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy")
-        coEvery { mockHikeDao.deleteHike(testHike) } just Runs
+        val invalidHikes = listOf(
+            LocalTrack(assetId = "", name = "Invalid Hike", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0)
+        )
 
-        // When
-        hikeRepository.deleteHike(testHike)
-
-        // Then
-        coVerify { mockHikeDao.deleteHike(testHike) }
+        // When & Then
+        try {
+            hikeRepository.insertAll(invalidHikes)
+            fail("Expected IllegalArgumentException")
+        } catch (e: IllegalArgumentException) {
+            // Expected
+        }
+        coVerify(exactly = 0) { mockHikeDao.insertAll(any()) }
     }
 
     @Test
     fun `toggleFavorite should update hike favorite status`() = runTest {
         // Given
-        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", isFavorite = false)
-        coEvery { mockHikeDao.getHikeById("1") } returns testHike
+        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0, isFavorite = false)
+        coEvery { mockHikeDao.getHikeByAssetId("1") } returns testHike
         coEvery { mockHikeDao.updateHike(any()) } just Runs
 
         // When
-        hikeRepository.toggleFavorite("1")
+        hikeRepository.toggleFavorite("1", true)
 
         // Then
         coVerify { 
-            mockHikeDao.getHikeById("1")
-            mockHikeDao.updateHike(testHike.copy(isFavorite = true))
+            mockHikeDao.getHikeByAssetId("1")
+            mockHikeDao.updateHike(match { it.isFavorite == true })
         }
     }
 
     @Test
-    fun `toggleDone should update hike done status`() = runTest {
+    fun `markAsDone should update hike done status`() = runTest {
         // Given
-        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", isDone = false)
-        coEvery { mockHikeDao.getHikeById("1") } returns testHike
+        val testHike = LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0, isDone = false)
+        coEvery { mockHikeDao.getHikeByAssetId("1") } returns testHike
         coEvery { mockHikeDao.updateHike(any()) } just Runs
 
         // When
-        hikeRepository.toggleDone("1")
+        hikeRepository.markAsDone("1", true)
 
         // Then
         coVerify { 
-            mockHikeDao.getHikeById("1")
-            mockHikeDao.updateHike(testHike.copy(isDone = true))
+            mockHikeDao.getHikeByAssetId("1")
+            mockHikeDao.updateHike(match { it.isDone == true })
         }
     }
 
     @Test
     fun `toggleFavorite should handle null hike gracefully`() = runTest {
         // Given
-        coEvery { mockHikeDao.getHikeById("1") } returns null
+        coEvery { mockHikeDao.getHikeByAssetId("1") } returns null
 
-        // When & Then
-        assertThrows(IllegalArgumentException::class.java) {
-            hikeRepository.toggleFavorite("1")
-        }
-        coVerify { mockHikeDao.getHikeById("1") }
+        // When
+        hikeRepository.toggleFavorite("1", true)
+
+        // Then
+        coVerify { mockHikeDao.getHikeByAssetId("1") }
         coVerify(exactly = 0) { mockHikeDao.updateHike(any()) }
     }
 
     @Test
-    fun `toggleDone should handle null hike gracefully`() = runTest {
+    fun `markAsDone should handle null hike gracefully`() = runTest {
         // Given
-        coEvery { mockHikeDao.getHikeById("1") } returns null
+        coEvery { mockHikeDao.getHikeByAssetId("1") } returns null
 
-        // When & Then
-        assertThrows(IllegalArgumentException::class.java) {
-            hikeRepository.toggleDone("1")
-        }
-        coVerify { mockHikeDao.getHikeById("1") }
+        // When
+        hikeRepository.markAsDone("1", true)
+
+        // Then
+        coVerify { mockHikeDao.getHikeByAssetId("1") }
         coVerify(exactly = 0) { mockHikeDao.updateHike(any()) }
+    }
+
+    @Test
+    fun `searchHikes should filter hikes by query`() = runTest {
+        // Given
+        val testHikes = listOf(
+            LocalTrack(assetId = "1", name = "Mountain Hike", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0),
+            LocalTrack(assetId = "2", name = "Beach Walk", location = "Location 2", distanceKm = 10.0, duration = "4h", difficulty = "Medium", imageRes = 0)
+        )
+        coEvery { mockHikeDao.getAllHikes() } returns flowOf(testHikes)
+
+        // When
+        val result = hikeRepository.searchHikes("Mountain")
+        val collected = mutableListOf<List<LocalTrack>>()
+        val job = launch {
+            result.collect { collected.add(it) }
+        }
+        advanceUntilIdle()
+        job.cancel()
+
+        // Then
+        assertTrue(collected.isNotEmpty())
+        val filtered = collected.last()
+        assertEquals(1, filtered.size)
+        assertEquals("Mountain Hike", filtered[0].name)
+    }
+
+    @Test
+    fun `getHikeStats should return correct statistics`() = runTest {
+        // Given
+        val testHikes = listOf(
+            LocalTrack(assetId = "1", name = "Hike 1", location = "Location 1", distanceKm = 5.0, duration = "2h", difficulty = "Easy", imageRes = 0, isFavorite = true),
+            LocalTrack(assetId = "2", name = "Hike 2", location = "Location 2", distanceKm = 10.0, duration = "4h", difficulty = "Medium", imageRes = 0, isDone = true)
+        )
+        coEvery { mockHikeDao.getAllHikes() } returns flowOf(testHikes)
+
+        // When
+        val result = hikeRepository.getHikeStats()
+        val collected = mutableListOf<HikeStats>()
+        val job = launch {
+            result.collect { collected.add(it) }
+        }
+        advanceUntilIdle()
+        job.cancel()
+
+        // Then
+        assertTrue(collected.isNotEmpty())
+        val stats = collected.last()
+        assertEquals(2, stats.totalHikes)
+        assertEquals(1, stats.favoriteHikes)
+        assertEquals(1, stats.doneHikes)
+        assertEquals(15.0, stats.totalDistance, 0.01)
     }
 }
