@@ -18,6 +18,6 @@ interface HutDao {
     @Query("SELECT COUNT(*) FROM huts")
     suspend fun getCount(): Int
 
-    @Query("SELECT * FROM huts WHERE name LIKE '%' || :query || '%' ORDER BY name ASC")
+    @Query("SELECT * FROM huts WHERE name LIKE :query ORDER BY name ASC LIMIT 50")
     fun searchHuts(query: String): Flow<List<Hut>>
 }

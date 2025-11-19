@@ -10,10 +10,12 @@ import com.hao.data.repository.HutRepository
 import com.hao.explore.model.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,12 +38,14 @@ class SearchViewModel @Inject constructor(
     init {
         // Ensure local DB has data loaded from assets at least once
         viewModelScope.launch {
-            // Load data if needed (no-op if already loaded)
-            trackRepository.loadTracksFromAssets(appContext)
-            campsiteRepository.loadCampsitesFromAssets(appContext)
-            hutRepository.loadHutsFromAssets(appContext)
+            // Load data in parallel
+            launch { trackRepository.loadTracksFromAssets(appContext) }
+            launch { campsiteRepository.loadCampsitesFromAssets(appContext) }
+            launch { hutRepository.loadHutsFromAssets(appContext) }
+        }
 
-            // Start search flow
+        // Start search flow
+        viewModelScope.launch {
             searchQuery
                 .debounce(300)
                 .flatMapLatest { query ->
@@ -50,20 +54,23 @@ class SearchViewModel @Inject constructor(
                     } else {
                         val searchType = savedStateHandle.get<Int>("searchType") ?: 0
                         when (searchType) {
-                            0 -> trackRepository.searchTracks("%$query%")
+                            0 -> trackRepository.searchTracks(query)
                                 .map { tracks ->
                                     tracks.map { SearchResult.TrackResult(it) }
                                 }
+                                .flowOn(Dispatchers.Default)
 
-                            1 -> campsiteRepository.searchCampsites("%$query%")
+                            1 -> campsiteRepository.searchCampsites(query)
                                 .map { campsites ->
                                     campsites.map { SearchResult.CampsiteResult(it) }
                                 }
+                                .flowOn(Dispatchers.Default)
 
                             2 -> hutRepository.searchHuts(query)
                                 .map { huts ->
                                     huts.map { SearchResult.HutResult(it) }
                                 }
+                                .flowOn(Dispatchers.Default)
 
                             else -> MutableStateFlow(emptyList())
                         }

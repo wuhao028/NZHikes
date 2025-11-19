@@ -18,6 +18,6 @@ interface CampsiteDao {
     @Query("SELECT COUNT(*) FROM campsites")
     suspend fun getCount(): Int
 
-    @Query("SELECT * FROM campsites WHERE name LIKE '%' || :query || '%' ORDER BY name ASC")
+    @Query("SELECT * FROM campsites WHERE name LIKE :query ORDER BY name ASC LIMIT 50")
     fun searchCampsites(query: String): Flow<List<Campsite>>
 }
