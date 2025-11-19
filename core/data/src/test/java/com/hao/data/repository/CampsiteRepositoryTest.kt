@@ -34,12 +34,18 @@ class CampsiteRepositoryTest {
         mockApiService = mockk<ApiService>(relaxed = true)
         mockContext = mockk<Context>(relaxed = true)
         
+        mockkStatic(android.util.Log::class)
+        every { android.util.Log.d(any(), any()) } returns 0
+        every { android.util.Log.e(any(), any(), any()) } returns 0
+        every { android.util.Log.e(any(), any()) } returns 0
+        
         campsiteRepository = CampsiteRepository(mockCampsiteDao, mockApiService)
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkStatic(android.util.Log::class)
     }
 
     @Test

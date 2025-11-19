@@ -139,8 +139,8 @@ class HikeRepositoryTest {
         // When & Then
         try {
             hikeRepository.insertAll(invalidHikes)
-            fail("Expected IllegalArgumentException")
-        } catch (e: IllegalArgumentException) {
+            fail("Expected HikeRepositoryException")
+        } catch (e: com.hao.data.repository.HikeRepositoryException) {
             // Expected
         }
         coVerify(exactly = 0) { mockHikeDao.insertAll(any()) }
