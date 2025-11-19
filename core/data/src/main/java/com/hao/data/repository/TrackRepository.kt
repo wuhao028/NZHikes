@@ -1,25 +1,38 @@
-package com.hao.data.data.repository
+package com.hao.data.repository
 
 import android.content.Context
 import android.util.Log
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.local.AppDatabase
 import com.hao.data.remote.ApiService
+import com.hao.data.remote.TrackDetailsResponse
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
- * Repository for handling track data operations
+ * Repository for handling track data operations.
+ *
+ * This repository acts as a single source of truth for track data, managing
+ * data from both local database and remote API.
+ *
+ * @property database The local Room database.
+ * @property apiService The remote API service.
+ * @property context The application context, used for loading assets.
  */
-class TrackRepository private constructor(
+@Singleton
+class TrackRepository @Inject constructor(
     private val database: AppDatabase,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    @ApplicationContext private val context: Context
 ) {
     private val trackDao = database.trackDao()
     private val moshi = Moshi.Builder()
@@ -30,7 +43,7 @@ class TrackRepository private constructor(
     private val trackListAdapter: JsonAdapter<List<RemoteTrack>> = moshi.adapter(trackListType)
 
 
-    suspend fun loadTracksFromAssets(context: Context): Boolean {
+    suspend fun loadTracksFromAssets(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val startTime = System.currentTimeMillis()
@@ -90,9 +103,9 @@ class TrackRepository private constructor(
         @Volatile
         private var INSTANCE: TrackRepository? = null
 
-        fun getInstance(database: AppDatabase, apiService: ApiService): TrackRepository {
+        fun getInstance(database: AppDatabase, apiService: ApiService, context: Context): TrackRepository {
             return INSTANCE ?: synchronized(this) {
-                val instance = TrackRepository(database, apiService)
+                val instance = TrackRepository(database, apiService, context)
                 INSTANCE = instance
                 instance
             }

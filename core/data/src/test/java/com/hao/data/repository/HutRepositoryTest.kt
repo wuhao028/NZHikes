@@ -38,7 +38,7 @@ class HutRepositoryTest {
         every { android.util.Log.e(any(), any(), any()) } returns 0
         every { android.util.Log.e(any(), any()) } returns 0
         
-        hutRepository = HutRepository(mockHutDao, mockApiService)
+        hutRepository = HutRepository(mockHutDao, mockApiService,mockContext)
     }
 
     @After
@@ -148,7 +148,7 @@ class HutRepositoryTest {
         every { mockContext.assets } returns mockAssets
 
         // When
-        val result = hutRepository.loadHutsFromAssets(mockContext)
+        val result = hutRepository.loadHutsFromAssets()
 
         // Then
         assertTrue(result)
@@ -165,7 +165,7 @@ class HutRepositoryTest {
         every { mockAssets.open("allHuts.json") } throws IOException("File not found")
 
         // When
-        val result = hutRepository.loadHutsFromAssets(mockContext)
+        val result = hutRepository.loadHutsFromAssets()
 
         // Then
         assertFalse(result)

@@ -1,4 +1,4 @@
-package com.hao.data.data.local
+package com.hao.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -7,9 +7,6 @@ import androidx.room.Query
 import com.hao.data.data.model.RemoteTrack
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Data Access Object for the tracks table
- */
 @Dao
 interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

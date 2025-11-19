@@ -1,15 +1,13 @@
 package com.hao.explore
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hao.data.data.repository.TrackRepository
 import com.hao.data.repository.CampsiteRepository
 import com.hao.data.repository.HutRepository
+import com.hao.data.repository.TrackRepository
 import com.hao.explore.model.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,8 +23,7 @@ class SearchViewModel @Inject constructor(
     private val trackRepository: TrackRepository,
     private val campsiteRepository: CampsiteRepository,
     private val hutRepository: HutRepository,
-    private val savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val appContext: Context
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -36,15 +33,12 @@ class SearchViewModel @Inject constructor(
     val searchResults: StateFlow<List<SearchResult>> = _searchResults
 
     init {
-        // Ensure local DB has data loaded from assets at least once
         viewModelScope.launch {
-            // Load data in parallel
-            launch { trackRepository.loadTracksFromAssets(appContext) }
-            launch { campsiteRepository.loadCampsitesFromAssets(appContext) }
-            launch { hutRepository.loadHutsFromAssets(appContext) }
+            launch { trackRepository.loadTracksFromAssets() }
+            launch { campsiteRepository.loadCampsitesFromAssets() }
+            launch { hutRepository.loadHutsFromAssets() }
         }
 
-        // Start search flow
         viewModelScope.launch {
             searchQuery
                 .debounce(300)

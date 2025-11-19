@@ -2,12 +2,12 @@ package com.hao.explore
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import com.hao.data.data.repository.TrackRepository
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
 import com.hao.data.repository.CampsiteRepository
 import com.hao.data.repository.HutRepository
+import com.hao.data.repository.TrackRepository
 import com.hao.explore.model.SearchResult
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -40,17 +40,15 @@ class SearchViewModelTest {
         mockContext = mockk<Context>(relaxed = true)
         
         every { mockSavedStateHandle.get<Int>("searchType") } returns 0
-        coEvery { mockTrackRepository.loadTracksFromAssets(any()) } returns true
-        coEvery { mockCampsiteRepository.loadCampsitesFromAssets(any()) } returns true
-        coEvery { mockHutRepository.loadHutsFromAssets(any()) } returns true
+        coEvery { mockTrackRepository.loadTracksFromAssets() } returns true
+        coEvery { mockCampsiteRepository.loadCampsitesFromAssets() } returns true
+        coEvery { mockHutRepository.loadHutsFromAssets() } returns true
         
         searchViewModel = SearchViewModel(
             mockTrackRepository,
             mockCampsiteRepository,
             mockHutRepository,
-            mockSavedStateHandle,
-            mockContext
-        )
+            mockSavedStateHandle)
     }
 
     @After

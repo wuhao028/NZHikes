@@ -10,7 +10,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hao.data.data.converter.CoordinateListConverter
 import com.hao.data.data.converter.StringListConverter
-import com.hao.data.data.local.TrackDao
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
@@ -65,13 +64,11 @@ abstract class AppDatabase : RoomDatabase() {
 
         private suspend fun prePopulate(context: Context, database: AppDatabase) {
             val gson = Gson()
-            // Pre-populate campsites
             val campsiteJson = readJsonFromAssets(context, "allCampsites.json")
             val campsiteType = object : TypeToken<List<Campsite>>() {}.type
             val campsites: List<Campsite> = gson.fromJson(campsiteJson, campsiteType)
             database.campsiteDao().insertAll(campsites)
 
-            // Pre-populate huts
             val hutJson = readJsonFromAssets(context, "allHuts.json")
             val hutType = object : TypeToken<List<Hut>>() {}.type
             val huts: List<Hut> = gson.fromJson(hutJson, hutType)

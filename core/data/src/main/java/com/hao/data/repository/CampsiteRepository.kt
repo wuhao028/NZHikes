@@ -10,6 +10,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -21,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class CampsiteRepository @Inject constructor(
     private val campsiteDao: CampsiteDao,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    @ApplicationContext private val context: Context
 ) {
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -30,7 +32,12 @@ class CampsiteRepository @Inject constructor(
         Types.newParameterizedType(List::class.java, Campsite::class.java)
     private val campsiteListAdapter: JsonAdapter<List<Campsite>> = moshi.adapter(campsiteListType)
 
-    suspend fun loadCampsitesFromAssets(context: Context): Boolean {
+    /**
+     * Loads initial campsite data from the "allCampsites.json" asset file into the local database.
+     *
+     * @return `true` if loading was successful or already loaded, `false` otherwise.
+     */
+    suspend fun loadCampsitesFromAssets(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 // Check if data is already loaded

@@ -39,7 +39,7 @@ class CampsiteRepositoryTest {
         every { android.util.Log.e(any(), any(), any()) } returns 0
         every { android.util.Log.e(any(), any()) } returns 0
         
-        campsiteRepository = CampsiteRepository(mockCampsiteDao, mockApiService)
+        campsiteRepository = CampsiteRepository(mockCampsiteDao, mockApiService, mockContext)
     }
 
     @After
@@ -167,7 +167,7 @@ class CampsiteRepositoryTest {
         every { mockContext.assets } returns mockAssets
 
         // When
-        val result = campsiteRepository.loadCampsitesFromAssets(mockContext)
+        val result = campsiteRepository.loadCampsitesFromAssets()
 
         // Then
         assertTrue(result)
@@ -184,7 +184,7 @@ class CampsiteRepositoryTest {
         every { mockAssets.open("allCampsites.json") } throws IOException("File not found")
 
         // When
-        val result = campsiteRepository.loadCampsitesFromAssets(mockContext)
+        val result = campsiteRepository.loadCampsitesFromAssets()
 
         // Then
         assertFalse(result)

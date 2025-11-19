@@ -3,16 +3,29 @@ package com.hao.data.data.repository
 import android.content.Context
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.local.AppDatabase
+import com.hao.data.local.TrackDao
 import com.hao.data.remote.ApiService
 import com.hao.data.remote.TrackDetailsResponse
-import io.mockk.*
+import com.hao.data.repository.TrackRepository
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
@@ -23,7 +36,7 @@ class TrackRepositoryTest {
     private lateinit var trackRepository: TrackRepository
     private lateinit var mockDatabase: AppDatabase
     private lateinit var mockApiService: ApiService
-    private lateinit var mockTrackDao: com.hao.data.data.local.TrackDao
+    private lateinit var mockTrackDao: TrackDao
     private lateinit var mockContext: Context
     private val testDispatcher = StandardTestDispatcher()
 
@@ -32,22 +45,22 @@ class TrackRepositoryTest {
         Dispatchers.setMain(testDispatcher)
         mockDatabase = mockk<AppDatabase>(relaxed = true)
         mockApiService = mockk<ApiService>(relaxed = true)
-        mockTrackDao = mockk<com.hao.data.data.local.TrackDao>(relaxed = true)
+        mockTrackDao = mockk<TrackDao>(relaxed = true)
         mockContext = mockk<Context>(relaxed = true)
-        
+
         mockkStatic(android.util.Log::class)
         every { android.util.Log.d(any(), any()) } returns 0
         every { android.util.Log.e(any(), any(), any()) } returns 0
         every { android.util.Log.e(any(), any()) } returns 0
-        
+
         every { mockDatabase.trackDao() } returns mockTrackDao
-        
+
         // Reset singleton instance
         val companion = TrackRepository::class.java.getDeclaredField("INSTANCE")
         companion.isAccessible = true
         companion.set(null, null)
-        
-        trackRepository = TrackRepository.getInstance(mockDatabase, mockApiService)
+
+        trackRepository = TrackRepository.getInstance(mockDatabase, mockApiService, mockContext)
     }
 
     @After
@@ -168,7 +181,7 @@ class TrackRepositoryTest {
         every { mockContext.assets } returns mockAssets
 
         // When
-        val result = trackRepository.loadTracksFromAssets(mockContext)
+        val result = trackRepository.loadTracksFromAssets()
 
         // Then
         assertTrue(result)
@@ -185,7 +198,7 @@ class TrackRepositoryTest {
         every { mockAssets.open("allTracks.json") } throws IOException("File not found")
 
         // When
-        val result = trackRepository.loadTracksFromAssets(mockContext)
+        val result = trackRepository.loadTracksFromAssets()
 
         // Then
         assertFalse(result)

@@ -10,9 +10,11 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class HutRepository @Inject constructor(
     private val hutDao: HutDao,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    @ApplicationContext private val context: Context
 ) {
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -28,29 +31,22 @@ class HutRepository @Inject constructor(
     private val hutListType = Types.newParameterizedType(List::class.java, Hut::class.java)
     private val hutListAdapter: JsonAdapter<List<Hut>> = moshi.adapter(hutListType)
 
-    suspend fun loadHutsFromAssets(context: Context): Boolean {
+    suspend fun loadHutsFromAssets(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if data is already loaded
                 if (hutDao.getCount() > 0) {
                     Log.d(TAG, "Huts already loaded in database")
                     return@withContext true
                 }
 
-                // Load JSON from assets
                 val jsonString = context.assets.open("allHuts.json")
                     .bufferedReader()
                     .use { it.readText() }
 
-                // Parse JSON to list of huts
                 val huts = hutListAdapter.fromJson(jsonString) ?: emptyList()
-
-                // Insert huts into database
                 hutDao.insertAll(huts)
 
-                val loadTime = System.currentTimeMillis()
-                Log.d(TAG, "Loaded ${huts.size} huts in ${loadTime}ms")
-
+                Log.d(TAG, "Loaded ${huts.size} huts")
                 true
             } catch (e: IOException) {
                 Log.e(TAG, "Error loading huts from assets", e)
@@ -74,7 +70,14 @@ class HutRepository @Inject constructor(
         return try {
             val response = apiService.getHutDetails(assetId)
             Result.success(response)
+        } catch (e: HttpException) {
+            Log.e(TAG, "HTTP error getting hut details", e)
+            Result.failure(e)
+        } catch (e: IOException) {
+            Log.e(TAG, "Network error getting hut details", e)
+            Result.failure(e)
         } catch (e: Exception) {
+            Log.e(TAG, "Unexpected error getting hut details", e)
             Result.failure(e)
         }
     }
