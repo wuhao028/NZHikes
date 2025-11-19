@@ -49,6 +49,8 @@ dataStore = "1.1.1"
 osmdroid = "6.1.17"
 gson = "2.10.1"
 proj4j = "1.2.1"
+mockk = "1.13.8"
+coroutines-test = "1.10.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
@@ -122,6 +124,10 @@ androidx-media3-datasource-okhttp = { group = "androidx.media3", name = "media3-
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid" }
 proj4j = { group = "org.locationtech.proj4j", name = "proj4j", version.ref = "proj4j" }
+
+# Testing
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-test" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

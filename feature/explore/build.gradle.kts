@@ -111,4 +111,10 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
 
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test) {
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
+    }
 }

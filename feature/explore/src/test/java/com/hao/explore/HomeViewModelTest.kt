@@ -1,9 +1,11 @@
 package com.hao.explore
 
-import com.hao.data.data.repository.TrackRepository
+import com.hao.data.local.CampsiteDao
+import com.hao.data.local.HutDao
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
-import com.hao.data.data.model.RemoteTrack
+import com.hao.data.model.LocalTrack
+import com.hao.data.repository.HikeRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,14 +20,28 @@ import org.junit.Test
 class HomeViewModelTest {
 
     private lateinit var homeViewModel: HomeViewModel
-    private lateinit var mockTrackRepository: TrackRepository
+    private lateinit var mockHikeRepository: HikeRepository
+    private lateinit var mockCampsiteDao: CampsiteDao
+    private lateinit var mockHutDao: HutDao
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        mockTrackRepository = mockk<TrackRepository>(relaxed = true)
-        homeViewModel = HomeViewModel(mockTrackRepository)
+        mockHikeRepository = mockk<HikeRepository>(relaxed = true)
+        mockCampsiteDao = mockk<CampsiteDao>(relaxed = true)
+        mockHutDao = mockk<HutDao>(relaxed = true)
+        
+        coEvery { mockHikeRepository.getAllHikes() } returns flowOf(emptyList())
+        coEvery { mockCampsiteDao.getAllCampsites() } returns flowOf(emptyList())
+        coEvery { mockHutDao.getAllHuts() } returns flowOf(emptyList())
+        coEvery { mockHikeRepository.insertAll(any()) } just Runs
+        
+        homeViewModel = HomeViewModel(
+            mockHikeRepository,
+            mockCampsiteDao,
+            mockHutDao
+        )
     }
 
     @After
@@ -34,29 +50,41 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `initial state should be loading`() = runTest {
+    fun `initial state should have empty lists`() = runTest {
         // When
+        advanceUntilIdle()
         val initialState = homeViewModel.uiState.value
 
         // Then
-        assertTrue(initialState.isLoading)
-        assertNull(initialState.error)
-        assertTrue(initialState.tracks.isEmpty())
+        assertTrue(initialState.dayHikes.isEmpty())
+        assertTrue(initialState.greatWalks.isEmpty())
         assertTrue(initialState.campsites.isEmpty())
         assertTrue(initialState.huts.isEmpty())
+        assertFalse(initialState.isLoading)
+        assertNull(initialState.error)
     }
 
     @Test
-    fun `loadData should update state with tracks, campsites and huts`() = runTest {
+    fun `should update state with tracks, campsites and huts`() = runTest {
         // Given
-        val testTracks = listOf(
-            RemoteTrack(
-                assetId = "track1",
-                name = "Test Track 1",
-                region = listOf("Region 1"),
-                x = 174.0,
-                y = -41.0,
-                line = listOf(listOf(listOf(174.0, -41.0)))
+        val testHikes = listOf(
+            LocalTrack(
+                assetId = "hike1",
+                name = "Test Hike 1",
+                location = "Location 1",
+                distanceKm = 5.0,
+                duration = "2h",
+                difficulty = "Easy",
+                imageRes = 0
+            ),
+            LocalTrack(
+                assetId = "hike2",
+                name = "Great Walk",
+                location = "Location 2",
+                distanceKm = 50.0,
+                duration = "4 days",
+                difficulty = "Intermediate",
+                imageRes = 0
             )
         )
         val testCampsites = listOf(
@@ -66,198 +94,110 @@ class HomeViewModelTest {
             Hut(assetId = "hut1", name = "Test Hut 1", region = "Region 1", y = -41.0, x = 174.0)
         )
 
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(testTracks)
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(testCampsites)
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(testHuts)
+        coEvery { mockHikeRepository.getAllHikes() } returns flowOf(testHikes)
+        coEvery { mockCampsiteDao.getAllCampsites() } returns flowOf(testCampsites)
+        coEvery { mockHutDao.getAllHuts() } returns flowOf(testHuts)
 
         // When
-        homeViewModel.loadData()
+        homeViewModel = HomeViewModel(mockHikeRepository, mockCampsiteDao, mockHutDao)
+        advanceUntilIdle()
 
         // Then
-        advanceUntilIdle()
         val state = homeViewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.error)
-        assertEquals(testTracks, state.tracks)
-        assertEquals(testCampsites, state.campsites)
-        assertEquals(testHuts, state.huts)
+        assertEquals(1, state.dayHikes.size)
+        assertEquals(1, state.greatWalks.size)
+        assertEquals(1, state.campsites.size)
+        assertEquals(1, state.huts.size)
+        assertEquals("Test Hike 1", state.dayHikes[0].name)
+        assertEquals("Great Walk", state.greatWalks[0].name)
     }
 
     @Test
-    fun `loadData should handle repository errors`() = runTest {
+    fun `should separate day hikes and great walks based on duration`() = runTest {
         // Given
-        val errorMessage = "Network error"
-        coEvery { mockTrackRepository.getAllTracks() } throws Exception(errorMessage)
-
-        // When
-        homeViewModel.loadData()
-
-        // Then
-        advanceUntilIdle()
-        val state = homeViewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertEquals(errorMessage, state.error)
-    }
-
-    @Test
-    fun `search should filter tracks by name`() = runTest {
-        // Given
-        val testTracks = listOf(
-            RemoteTrack(
-                assetId = "track1",
-                name = "Mountain Track",
-                region = listOf("Region 1"),
-                x = 174.0,
-                y = -41.0,
-                line = listOf(listOf(listOf(174.0, -41.0)))
+        val testHikes = listOf(
+            LocalTrack(
+                assetId = "hike1",
+                name = "Day Hike",
+                location = "Location 1",
+                distanceKm = 5.0,
+                duration = "2h",
+                difficulty = "Easy",
+                imageRes = 0
             ),
-            RemoteTrack(
-                assetId = "track2",
-                name = "Beach Walk",
-                region = listOf("Region 2"),
-                x = 174.0,
-                y = -41.0,
-                line = listOf(listOf(listOf(174.0, -41.0)))
+            LocalTrack(
+                assetId = "hike2",
+                name = "Great Walk 1",
+                location = "Location 2",
+                distanceKm = 50.0,
+                duration = "4 days",
+                difficulty = "Intermediate",
+                imageRes = 0
+            ),
+            LocalTrack(
+                assetId = "hike3",
+                name = "Great Walk 2",
+                location = "Location 3",
+                distanceKm = 60.0,
+                duration = "3–4 days",
+                difficulty = "Intermediate",
+                imageRes = 0
             )
         )
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(testTracks)
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(emptyList())
 
-        homeViewModel.loadData()
-        advanceUntilIdle()
+        coEvery { mockHikeRepository.getAllHikes() } returns flowOf(testHikes)
+        coEvery { mockCampsiteDao.getAllCampsites() } returns flowOf(emptyList())
+        coEvery { mockHutDao.getAllHuts() } returns flowOf(emptyList())
 
         // When
-        homeViewModel.search("Mountain")
+        homeViewModel = HomeViewModel(mockHikeRepository, mockCampsiteDao, mockHutDao)
+        advanceUntilIdle()
 
         // Then
         val state = homeViewModel.uiState.value
-        assertEquals(1, state.filteredTracks.size)
-        assertEquals("Mountain Track", state.filteredTracks[0].name)
+        assertEquals(1, state.dayHikes.size)
+        assertEquals(2, state.greatWalks.size)
+        assertEquals("Day Hike", state.dayHikes[0].name)
     }
 
     @Test
-    fun `search should filter campsites by name`() = runTest {
+    fun `toggleFavorite should update hike favorite status`() = runTest {
         // Given
-        val testCampsites = listOf(
-            Campsite(assetId = "campsite1", name = "Mountain Campsite", region = "Region 1", y = -41.0, x = 174.0),
-            Campsite(assetId = "campsite2", name = "Beach Campsite", region = "Region 2", y = -41.0, x = 174.0)
+        val testHike = LocalTrack(
+            assetId = "hike1",
+            name = "Test Hike",
+            location = "Location 1",
+            distanceKm = 5.0,
+            duration = "2h",
+            difficulty = "Easy",
+            imageRes = 0,
+            isFavorite = false
         )
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(testCampsites)
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(emptyList())
-
-        homeViewModel.loadData()
-        advanceUntilIdle()
+        coEvery { mockHikeRepository.updateHike(any()) } just Runs
 
         // When
-        homeViewModel.search("Mountain")
+        homeViewModel.toggleFavorite(testHike)
+        advanceUntilIdle()
 
         // Then
-        val state = homeViewModel.uiState.value
-        assertEquals(1, state.filteredCampsites.size)
-        assertEquals("Mountain Campsite", state.filteredCampsites[0].name)
+        coVerify { mockHikeRepository.updateHike(match { it.assetId == testHike.assetId && it.isFavorite == true }) }
     }
 
     @Test
-    fun `search should filter huts by name`() = runTest {
+    fun `should handle empty results`() = runTest {
         // Given
-        val testHuts = listOf(
-            Hut(assetId = "hut1", name = "Mountain Hut", region = "Region 1", y = -41.0, x = 174.0),
-            Hut(assetId = "hut2", name = "Beach Hut", region = "Region 2", y = -41.0, x = 174.0)
-        )
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(testHuts)
-
-        homeViewModel.loadData()
-        advanceUntilIdle()
+        coEvery { mockHikeRepository.getAllHikes() } returns flowOf(emptyList())
+        coEvery { mockCampsiteDao.getAllCampsites() } returns flowOf(emptyList())
+        coEvery { mockHutDao.getAllHuts() } returns flowOf(emptyList())
 
         // When
-        homeViewModel.search("Mountain")
+        homeViewModel = HomeViewModel(mockHikeRepository, mockCampsiteDao, mockHutDao)
+        advanceUntilIdle()
 
         // Then
         val state = homeViewModel.uiState.value
-        assertEquals(1, state.filteredHuts.size)
-        assertEquals("Mountain Hut", state.filteredHuts[0].name)
-    }
-
-    @Test
-    fun `search should be case insensitive`() = runTest {
-        // Given
-        val testTracks = listOf(
-            RemoteTrack(
-                assetId = "track1",
-                name = "Mountain Track",
-                region = listOf("Region 1"),
-                x = 174.0,
-                y = -41.0,
-                line = listOf(listOf(listOf(174.0, -41.0)))
-            )
-        )
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(testTracks)
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(emptyList())
-
-        homeViewModel.loadData()
-        advanceUntilIdle()
-
-        // When
-        homeViewModel.search("mountain")
-
-        // Then
-        val state = homeViewModel.uiState.value
-        assertEquals(1, state.filteredTracks.size)
-        assertEquals("Mountain Track", state.filteredTracks[0].name)
-    }
-
-    @Test
-    fun `clearSearch should reset filtered results`() = runTest {
-        // Given
-        val testTracks = listOf(
-            RemoteTrack(
-                assetId = "track1",
-                name = "Mountain Track",
-                region = listOf("Region 1"),
-                x = 174.0,
-                y = -41.0,
-                line = listOf(listOf(listOf(174.0, -41.0)))
-            )
-        )
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(testTracks)
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(emptyList())
-
-        homeViewModel.loadData()
-        advanceUntilIdle()
-        homeViewModel.search("Mountain")
-
-        // When
-        homeViewModel.clearSearch()
-
-        // Then
-        val state = homeViewModel.uiState.value
-        assertEquals(testTracks, state.filteredTracks)
-        assertTrue(state.filteredCampsites.isEmpty())
-        assertTrue(state.filteredHuts.isEmpty())
-    }
-
-    @Test
-    fun `loadData should handle empty results`() = runTest {
-        // Given
-        coEvery { mockTrackRepository.getAllTracks() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllCampsites() } returns flowOf(emptyList())
-        coEvery { mockTrackRepository.getAllHuts() } returns flowOf(emptyList())
-
-        // When
-        homeViewModel.loadData()
-
-        // Then
-        advanceUntilIdle()
-        val state = homeViewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.error)
-        assertTrue(state.tracks.isEmpty())
+        assertTrue(state.dayHikes.isEmpty())
+        assertTrue(state.greatWalks.isEmpty())
         assertTrue(state.campsites.isEmpty())
         assertTrue(state.huts.isEmpty())
     }
