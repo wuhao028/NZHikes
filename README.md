@@ -39,6 +39,14 @@ NZHikes/
 └── gradle/                      # Gradle configuration
 ```
 
+## Screenshots
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="screenshots/Screenshot_20260127_133950.png" width="300" /> | <img src="screenshots/Screenshot_20260127_134006.png" width="300" /> | <img src="screenshots/Screenshot_20260127_134024.png" width="300" /> |
+| <img src="screenshots/Screenshot_20260127_134032.png" width="300" /> | <img src="screenshots/Screenshot_20260127_134038.png" width="300" /> | <img src="screenshots/Screenshot_20260127_134116.png" width="300" /> |
+| <img src="screenshots/Screenshot_20260127_134148.png" width="300" /> | <img src="screenshots/Screenshot_20260127_134202.png" width="300" /> | |
+
 ## Key Optimizations
 
 ### 1. Code Structure Optimization
