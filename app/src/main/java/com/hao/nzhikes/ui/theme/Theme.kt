@@ -1,14 +1,11 @@
 package com.hao.nzhikes.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -16,24 +13,31 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = Color.Transparent,
-    surface = Color.Transparent,
-    surfaceVariant = Color.Transparent
+    primary = AlpineGreen, onPrimary = Color(0xFF00391F),
+    primaryContainer = DarkForestContainer, onPrimaryContainer = Color(0xFFA9F2C2),
+    secondary = DarkLakeTeal, onSecondary = Color(0xFF003737),
+    secondaryContainer = DarkLakeContainer, onSecondaryContainer = Color(0xFF9CF1EF),
+    tertiary = DarkTussockGold, onTertiary = Color(0xFF492900),
+    tertiaryContainer = DarkTussockContainer, onTertiaryContainer = Color(0xFFFFDDB8),
+    background = NightBackground, onBackground = NightInk,
+    surface = NightSurface, onSurface = NightInk,
+    surfaceVariant = NightSurfaceVariant, onSurfaceVariant = NightMutedInk,
+    outline = DarkOutline
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = Color.Transparent,
-    surface = Color.Transparent,
-    surfaceVariant = Color.Transparent
+    primary = ForestGreen, onPrimary = OnForestGreen,
+    primaryContainer = ForestContainer, onPrimaryContainer = OnForestContainer,
+    secondary = LakeTeal, onSecondary = Color.White,
+    secondaryContainer = LakeContainer, onSecondaryContainer = Color(0xFF002020),
+    tertiary = TussockGold, onTertiary = Color.White,
+    tertiaryContainer = TussockContainer, onTertiaryContainer = Color(0xFF2D1600),
+    background = MistBackground, onBackground = Ink,
+    surface = MistSurface, onSurface = Ink,
+    surfaceVariant = MistSurfaceVariant, onSurfaceVariant = MutedInk,
+    outline = LightOutline
 )
 
 // CompositionLocal for theme state
@@ -42,48 +46,15 @@ val LocalThemeState = staticCompositionLocalOf { false }
 @Composable
 fun NZHikesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val baseColorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    
-    // Override background colors to be transparent so gradient shows through
-    val colorScheme = baseColorScheme.copy(
-        background = Color.Transparent,
-        surface = Color.Transparent,
-        surfaceVariant = Color.Transparent
-    )
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     // Define gradient colors based on theme
     val gradientColors = if (darkTheme) {
-        listOf(
-            Color(0xFF0B1426), // Very dark navy
-            Color(0xFF1E3A8A), // Dark blue
-            Color(0xFF1E3A8A), // Dark blue
-            Color(0xFF1E3A8A), // Dark blue
-            Color(0xFF1E3A8A), // Dark blue
-            Color(0xFF3730A3), // Indigo
-            Color(0xFF581C87)  // Purple
-        )
+        listOf(Color(0xFF0C1510), NightBackground, Color(0xFF123127))
     } else {
-        listOf(
-            Color(0xFFFFFF),
-            Color(0xFFFFFF),
-            Color(0xFFFFFF),
-            Color(0xFFFFFF),
-            Color(0xFFFFFF),
-            Color(0xFF4CAF50),
-            Color(0xFF2E7D32)
-        )
+        listOf(Color(0xFFF9FBF6), MistBackground, Color(0xFFE2F1EA))
     }
 
     val gradientBrush = Brush.verticalGradient(

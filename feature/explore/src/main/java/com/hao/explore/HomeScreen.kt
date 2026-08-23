@@ -1,8 +1,9 @@
 package com.hao.explore
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,17 +16,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cabin
+import androidx.compose.material.icons.filled.Forest
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -35,9 +42,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
@@ -56,13 +68,6 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val tabs = listOf("Tracks", "Campsite", "Hut")
-    val icons =
-        listOf(
-            painterResource(com.hao.ui.R.drawable.ic_hiking),
-            painterResource(com.hao.ui.R.drawable.ic_camping),
-            painterResource(com.hao.ui.R.drawable.ic_hut)
-        )
     val listState = rememberLazyListState()
     var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -81,13 +86,13 @@ fun HomeScreen(
         }
     }
 
-    val iconSize by animateDpAsState(
-        targetValue = (80 * (1f - animationProgress.value)).dp,
-        label = "iconSize"
+    val iconContainerSize by animateDpAsState(
+        targetValue = (62 * (1f - animationProgress.value)).dp,
+        label = "iconContainerSize"
     )
 
     val tabContainerHeight by animateDpAsState(
-        targetValue = 120.dp - (80.dp * animationProgress.value),
+        targetValue = 108.dp - (56.dp * animationProgress.value),
         label = "tabContainerHeight"
     )
 
@@ -109,43 +114,14 @@ fun HomeScreen(
                     .padding(vertical = 8.dp)
             )
         }
-        Row(
+        HomeCategoryTabs(
+            selectedTabIndex = selectedTabIndex,
+            iconContainerSize = iconContainerSize,
+            onTabSelected = { selectedTabIndex = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(tabContainerHeight),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            tabs.forEachIndexed { index, title ->
-                val isSelected = selectedTabIndex == index
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .clickable { selectedTabIndex = index }
-                ) {
-                    Image(
-                        painter = icons[index],
-                        contentDescription = title,
-                        modifier = Modifier
-                            .size(iconSize)
-                    )
-                    Text(
-                        text = title,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(2.dp)
-                            .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                    )
-                }
-            }
-        }
+                .height(tabContainerHeight)
+        )
         when (selectedTabIndex) {
             0 -> TracksList(
                 uiState = uiState,
@@ -164,6 +140,133 @@ fun HomeScreen(
                 huts = uiState.huts,
                 listState = listState,
                 onHutClick = onHutClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeCategoryTabs(
+    selectedTabIndex: Int,
+    iconContainerSize: androidx.compose.ui.unit.Dp,
+    onTabSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val tabs = listOf("Tracks", "Campsite", "Hut")
+    val icons = listOf(Icons.Default.Terrain, Icons.Default.Forest, Icons.Default.Cabin)
+    val iconColors = listOf(
+        Color(0xFF2E7D32),
+        Color(0xFF00838F),
+        Color(0xFFE65100)
+    )
+
+    Row(
+        modifier = modifier.padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        tabs.forEachIndexed { index, title ->
+            HomeCategoryTab(
+                title = title,
+                icon = icons[index],
+                accentColor = iconColors[index],
+                selected = selectedTabIndex == index,
+                iconContainerSize = iconContainerSize,
+                onClick = { onTabSelected(index) },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeCategoryTab(
+    title: String,
+    icon: ImageVector,
+    accentColor: Color,
+    selected: Boolean,
+    iconContainerSize: androidx.compose.ui.unit.Dp,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val containerColor by animateColorAsState(
+        targetValue = if (selected) {
+            accentColor.copy(alpha = 0.22f)
+        } else {
+            accentColor.copy(alpha = 0.12f)
+        },
+        label = "categoryContainerColor"
+    )
+    val contentColor by animateColorAsState(
+        targetValue = if (selected) {
+            accentColor
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        label = "categoryContentColor"
+    )
+    val shape = RoundedCornerShape(20.dp)
+
+    Column(
+        modifier = modifier
+            .clip(shape)
+            .clickable(role = Role.Tab, onClick = onClick)
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(iconContainerSize)
+                .clip(RoundedCornerShape(18.dp))
+                .background(containerColor),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = accentColor,
+                modifier = Modifier.size(iconContainerSize * 0.56f)
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = title,
+            color = contentColor,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Box(
+            modifier = Modifier
+                .width(24.dp)
+                .height(3.dp)
+                .clip(RoundedCornerShape(50))
+                .background(if (selected) accentColor else Color.Transparent)
+        )
+    }
+}
+
+@Preview(
+    name = "Home category tabs",
+    showBackground = true,
+    backgroundColor = 0xFFF5F7F2,
+    widthDp = 390,
+    heightDp = 120
+)
+@Composable
+private fun HomeCategoryTabsPreview() {
+    MaterialTheme {
+        Surface(color = Color(0xFFF5F7F2)) {
+            HomeCategoryTabs(
+                selectedTabIndex = 0,
+                iconContainerSize = 62.dp,
+                onTabSelected = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(108.dp)
             )
         }
     }
@@ -224,7 +327,9 @@ private fun HutsList(
 @Composable
 private fun TrackItem(track: RemoteTrack, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier.clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.18f))
     ) {
         Column(
             modifier = Modifier
@@ -243,7 +348,10 @@ private fun TrackItem(track: RemoteTrack, onClick: () -> Unit) {
 @Composable
 private fun CampsiteItem(campsite: Campsite, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier.clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.22f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
@@ -271,7 +379,10 @@ private fun CampsiteItem(campsite: Campsite, onClick: () -> Unit) {
 @Composable
 private fun HutItem(hut: Hut, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier.clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.22f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier

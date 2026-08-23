@@ -59,9 +59,6 @@ private object MeScreenConstants {
     val SMALL_SPACING = 8.dp
     val MEDIUM_SPACING = 12.dp
     
-    val DARK_MODE_CARD_COLOR = Color(0xFF2A2A2A).copy(alpha = 0.9f)
-    val LIGHT_MODE_CARD_COLOR = Color(0xFFF8F9FA).copy(alpha = 0.95f)
-
     const val PROFILE_TITLE = "Profile"
     const val SETTINGS_TITLE = "Settings"
     const val USER_NAME = "NZ Hikes User"
@@ -154,7 +151,7 @@ private fun ProfileCard(isDarkMode: Boolean) {
         elevation = CardDefaults.cardElevation(defaultElevation = MeScreenConstants.CARD_ELEVATION),
         shape = RoundedCornerShape(MeScreenConstants.CARD_CORNER_RADIUS),
         colors = CardDefaults.cardColors(
-            containerColor = getCardBackgroundColor(isDarkMode)
+            containerColor = getCardBackgroundColor()
         )
     ) {
         Column(
@@ -215,7 +212,7 @@ private fun SettingsCard(
         elevation = CardDefaults.cardElevation(defaultElevation = MeScreenConstants.CARD_ELEVATION),
         shape = RoundedCornerShape(MeScreenConstants.CARD_CORNER_RADIUS),
         colors = CardDefaults.cardColors(
-            containerColor = getCardBackgroundColor(isDarkMode)
+            containerColor = getCardBackgroundColor()
         )
     ) {
         Column(
@@ -342,7 +339,7 @@ private fun StatsCard(
         elevation = CardDefaults.cardElevation(defaultElevation = MeScreenConstants.CARD_ELEVATION),
         shape = RoundedCornerShape(MeScreenConstants.CARD_CORNER_RADIUS),
         colors = CardDefaults.cardColors(
-            containerColor = getCardBackgroundColor(isDarkMode)
+            containerColor = getCardBackgroundColor()
         )
     ) {
         Row(
@@ -379,10 +376,6 @@ private fun StatsCard(
 }
 
 @Composable
-private fun getCardBackgroundColor(isDarkMode: Boolean): Color {
-    return if (isDarkMode) {
-        MeScreenConstants.DARK_MODE_CARD_COLOR
-    } else {
-        MeScreenConstants.LIGHT_MODE_CARD_COLOR
-    }
+private fun getCardBackgroundColor(): Color {
+    return MaterialTheme.colorScheme.surface
 }
