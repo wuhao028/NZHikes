@@ -63,7 +63,7 @@ class HutDetailViewModel @Inject constructor(
             try {
                 // Get the basic hut info from the local DB
                 val localHut = hutRepository.getAllHuts()
-                    .firstOrNull()?.firstOrNull() { it.assetId == assetId }
+                    .firstOrNull()?.firstOrNull { it.assetId == assetId }
 
                 // Then fetch the detailed info from the API
                 val result = hutRepository.getHutDetails(assetId)

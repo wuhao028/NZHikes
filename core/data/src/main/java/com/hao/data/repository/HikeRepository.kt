@@ -12,17 +12,17 @@ import javax.inject.Singleton
 class HikeRepository @Inject constructor(
     private val hikeDao: HikeDao
 ) {
-    
+
     fun getAllHikes(): Flow<List<LocalTrack>> = hikeDao.getAllHikes()
         .catch { exception ->
             throw HikeRepositoryException("Failed to get all hikes", exception)
         }
-    
+
     fun getFavoriteHikes(): Flow<List<LocalTrack>> = hikeDao.getFavoriteHikes()
         .catch { exception ->
             throw HikeRepositoryException("Failed to get favorite hikes", exception)
         }
-    
+
     suspend fun getHikeByAssetId(assetId: String): LocalTrack? {
         return try {
             hikeDao.getHikeByAssetId(assetId)
@@ -30,17 +30,17 @@ class HikeRepository @Inject constructor(
             throw HikeRepositoryException("Failed to get hike by asset ID: $assetId", exception)
         }
     }
-    
+
     fun getHikeById(hikeId: Int): Flow<LocalTrack?> = hikeDao.getHikeById(hikeId)
         .catch { exception ->
             throw HikeRepositoryException("Failed to get hike by ID: $hikeId", exception)
         }
-    
+
     fun getDoneHikes(): Flow<List<LocalTrack>> = hikeDao.getDoneHikes()
         .catch { exception ->
             throw HikeRepositoryException("Failed to get done hikes", exception)
         }
-    
+
     suspend fun updateHike(hike: LocalTrack) {
         try {
             if (!hike.validate()) {
@@ -51,7 +51,7 @@ class HikeRepository @Inject constructor(
             throw HikeRepositoryException("Failed to update hike: ${hike.name}", exception)
         }
     }
-    
+
     suspend fun insertAll(hikes: List<LocalTrack>) {
         try {
             val invalidHikes = hikes.filterNot { it.validate() }
@@ -63,7 +63,7 @@ class HikeRepository @Inject constructor(
             throw HikeRepositoryException("Failed to insert hikes", exception)
         }
     }
-    
+
     suspend fun toggleFavorite(assetId: String, isFavorite: Boolean) {
         try {
             val hike = getHikeByAssetId(assetId)
@@ -75,7 +75,7 @@ class HikeRepository @Inject constructor(
             throw HikeRepositoryException("Failed to toggle favorite for hike: $assetId", exception)
         }
     }
-    
+
     suspend fun markAsDone(assetId: String, isDone: Boolean) {
         try {
             val hike = getHikeByAssetId(assetId)
@@ -87,7 +87,7 @@ class HikeRepository @Inject constructor(
             throw HikeRepositoryException("Failed to mark hike as done: $assetId", exception)
         }
     }
-    
+
     fun searchHikes(query: String): Flow<List<LocalTrack>> {
         return getAllHikes().map { hikes ->
             if (query.isBlank()) {
@@ -101,7 +101,7 @@ class HikeRepository @Inject constructor(
             }
         }
     }
-    
+
     fun getHikeStats(): Flow<HikeStats> {
         return getAllHikes().map { hikes ->
             HikeStats(

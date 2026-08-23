@@ -1,7 +1,7 @@
 package com.hao.data.di
 
-import com.hao.data.remote.ApiService
 import com.hao.data.BuildConfig
+import com.hao.data.remote.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

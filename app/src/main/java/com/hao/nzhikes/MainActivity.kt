@@ -15,15 +15,15 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    
+
     @Inject
     lateinit var themeManager: ThemeManager
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         enableEdgeToEdge()
-        
+
         setContent {
             MainContent(themeManager = themeManager)
         }
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainContent(themeManager: ThemeManager) {
     val isDarkMode by themeManager.darkModeFlow.collectAsStateWithLifecycle(initialValue = false)
-    
+
     NZHikesTheme(darkTheme = isDarkMode) {
         AppNavigation()
     }

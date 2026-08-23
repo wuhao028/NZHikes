@@ -5,7 +5,6 @@ import android.util.Log
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.local.AppDatabase
 import com.hao.data.remote.ApiService
-import com.hao.data.remote.TrackDetailsResponse
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -103,7 +102,11 @@ class TrackRepository @Inject constructor(
         @Volatile
         private var INSTANCE: TrackRepository? = null
 
-        fun getInstance(database: AppDatabase, apiService: ApiService, context: Context): TrackRepository {
+        fun getInstance(
+            database: AppDatabase,
+            apiService: ApiService,
+            context: Context
+        ): TrackRepository {
             return INSTANCE ?: synchronized(this) {
                 val instance = TrackRepository(database, apiService, context)
                 INSTANCE = instance

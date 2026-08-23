@@ -67,7 +67,7 @@ class CampsiteDetailViewModel @Inject constructor(
             try {
                 // Get the basic campsite info from the local DB
                 val localCampsite = campsiteRepository.getAllCampsites()
-                    .firstOrNull()?.firstOrNull() { it.assetId == assetId }
+                    .firstOrNull()?.firstOrNull { it.assetId == assetId }
 
                 // Then fetch the detailed info from the API
                 val result = campsiteRepository.getCampsiteDetails(assetId)

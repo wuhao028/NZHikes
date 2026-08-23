@@ -6,11 +6,7 @@ import com.hao.data.local.CampsiteDao
 import com.hao.data.local.HikeDao
 import com.hao.data.local.HutDao
 import com.hao.data.local.TrackDao
-import com.hao.data.remote.ApiService
-import com.hao.data.repository.CampsiteRepository
 import com.hao.data.repository.HikeRepository
-import com.hao.data.repository.HutRepository
-import com.hao.data.repository.TrackRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

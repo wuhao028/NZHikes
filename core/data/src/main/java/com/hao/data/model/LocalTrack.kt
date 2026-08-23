@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class LocalTrack(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    
+
     val assetId: String,
     val name: String,
     val location: String,
@@ -18,7 +18,7 @@ data class LocalTrack(
     var isFavorite: Boolean = false,
     var isDone: Boolean = false
 ) {
-    
+
     fun validate(): Boolean {
         return assetId.isNotBlank() &&
                 name.isNotBlank() &&
@@ -27,15 +27,15 @@ data class LocalTrack(
                 duration.isNotBlank() &&
                 difficulty.isNotBlank()
     }
-    
+
     fun copyWithFavorite(isFavorite: Boolean): LocalTrack {
         return copy(isFavorite = isFavorite)
     }
-    
+
     fun copyWithDone(isDone: Boolean): LocalTrack {
         return copy(isDone = isDone)
     }
-    
+
     fun getFormattedDistance(): String {
         return when {
             distanceKm < 1 -> "${(distanceKm * 1000).toInt()}m"
@@ -43,7 +43,7 @@ data class LocalTrack(
             else -> "${distanceKm.toInt()}km"
         }
     }
-    
+
     fun getDifficultyColor(): String {
         return when (difficulty.lowercase()) {
             "easy" -> "#4CAF50"
@@ -52,7 +52,7 @@ data class LocalTrack(
             else -> "#9E9E9E"
         }
     }
-    
+
     companion object {
         fun createDefault(
             assetId: String,
@@ -73,7 +73,7 @@ data class LocalTrack(
                 imageRes = imageRes
             )
         }
-        
+
         object Difficulty {
             const val EASY = "Easy"
             const val MEDIUM = "Medium"

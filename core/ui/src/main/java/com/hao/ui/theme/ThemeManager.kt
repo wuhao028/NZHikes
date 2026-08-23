@@ -27,7 +27,7 @@ class ThemeManager @Inject constructor(
 ) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "theme_preferences")
-    
+
     var isDarkMode by mutableStateOf(false)
         private set
 

@@ -1,12 +1,12 @@
 package com.hao.explore
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
 import androidx.compose.material.icons.filled.Forest
@@ -48,12 +49,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
@@ -298,7 +298,12 @@ private fun HomeListItemsPreview() {
                 placeholder = stringResource(R.string.search_campsite_hint)
             )
             CampsiteItem(
-                campsite = Campsite("camp-preview", "Lake Rotoiti Campsite", "Open", "Nelson Lakes"),
+                campsite = Campsite(
+                    "camp-preview",
+                    "Lake Rotoiti Campsite",
+                    "Open",
+                    "Nelson Lakes"
+                ),
                 onClick = {}
             )
             HutItem(
@@ -477,7 +482,10 @@ fun SearchBar(
             onValueChange = {},
             enabled = false,
             leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_icon))
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search_icon)
+                )
             },
             placeholder = {
                 Text(text = resolvedPlaceholder)

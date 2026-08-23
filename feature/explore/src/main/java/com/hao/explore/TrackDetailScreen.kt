@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Hiking
@@ -27,8 +27,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,10 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -74,11 +78,11 @@ fun TrackDetailScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(
                         text = uiState.data?.name ?: stringResource(R.string.track_details),
                         style = MaterialTheme.typography.titleMedium
-                    ) 
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -171,13 +175,42 @@ fun TrackDetailContent(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row {
-                    IconButton(onClick = { hike?.let { onToggleFavorite(it) } }) {
+                    FilledTonalIconButton(
+                        onClick = { hike?.let { onToggleFavorite(it) } },
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = if (hike?.isFavorite == true) {
+                                MaterialTheme.colorScheme.errorContainer
+                            } else {
+                                MaterialTheme.colorScheme.primaryContainer
+                            },
+                            contentColor = if (hike?.isFavorite == true) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.primary
+                            }
+                        )
+                    ) {
                         Icon(
                             imageVector = if (hike?.isFavorite == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             contentDescription = stringResource(R.string.favorite)
                         )
                     }
-                    IconButton(onClick = { hike?.let { onToggleDone(it) } }) {
+                    Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                    FilledTonalIconButton(
+                        onClick = { hike?.let { onToggleDone(it) } },
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = if (hike?.isDone == true) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            },
+                            contentColor = if (hike?.isDone == true) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.secondary
+                            }
+                        )
+                    ) {
                         Icon(
                             imageVector = if (hike?.isDone == true) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
                             contentDescription = stringResource(R.string.mark_as_done)
@@ -305,6 +338,7 @@ fun RowScope.InfoCard(icon: ImageVector, label: String, value: String) {
     Card(
         modifier = Modifier
             .weight(1f)
+            .height(116.dp)
             .padding(horizontal = 4.dp)
     ) {
         Column(
@@ -318,12 +352,20 @@ fun RowScope.InfoCard(icon: ImageVector, label: String, value: String) {
                 tint = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = label, style = MaterialTheme.typography.labelSmall)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = value,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

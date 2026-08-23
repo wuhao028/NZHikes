@@ -4,7 +4,7 @@ import com.hao.data.model.LocalTrack
 import kotlin.math.roundToInt
 
 object DataUtils {
-    
+
     fun formatDistance(distanceKm: Double): String {
         return when {
             distanceKm < 1 -> "${(distanceKm * 1000).roundToInt()}m"
@@ -12,11 +12,11 @@ object DataUtils {
             else -> "${distanceKm.roundToInt()}km"
         }
     }
-    
+
     fun formatDuration(duration: String): String {
         return duration.trim()
     }
-    
+
     fun getDifficultyColor(difficulty: String): String {
         return when (difficulty.lowercase()) {
             "easy" -> "#4CAF50"
@@ -25,7 +25,7 @@ object DataUtils {
             else -> "#9E9E9E"
         }
     }
-    
+
     fun getDifficultyChineseName(difficulty: String): String {
         return when (difficulty.lowercase()) {
             "easy" -> "Easy"
@@ -34,40 +34,40 @@ object DataUtils {
             else -> "Unknown"
         }
     }
-    
+
     fun validateTrack(track: LocalTrack): ValidationResult {
         val errors = mutableListOf<String>()
-        
+
         if (track.assetId.isBlank()) {
             errors.add("Asset ID cannot be empty")
         }
-        
+
         if (track.name.isBlank()) {
             errors.add("Name cannot be empty")
         }
-        
+
         if (track.location.isBlank()) {
             errors.add("Location cannot be empty")
         }
-        
+
         if (track.distanceKm < 0) {
             errors.add("Distance cannot be negative")
         }
-        
+
         if (track.duration.isBlank()) {
             errors.add("Duration cannot be empty")
         }
-        
+
         if (track.difficulty.isBlank()) {
             errors.add("Difficulty cannot be empty")
         }
-        
+
         return ValidationResult(
             isValid = errors.isEmpty(),
             errors = errors
         )
     }
-    
+
     fun filterTracks(
         tracks: List<LocalTrack>,
         query: String = "",
@@ -76,20 +76,20 @@ object DataUtils {
         maxDistance: Double? = null
     ): List<LocalTrack> {
         return tracks.filter { track ->
-            val matchesQuery = query.isBlank() || 
-                track.name.contains(query, ignoreCase = true) ||
-                track.location.contains(query, ignoreCase = true)
-            
-            val matchesDifficulty = difficulty == null || 
-                track.difficulty.equals(difficulty, ignoreCase = true)
-            
+            val matchesQuery = query.isBlank() ||
+                    track.name.contains(query, ignoreCase = true) ||
+                    track.location.contains(query, ignoreCase = true)
+
+            val matchesDifficulty = difficulty == null ||
+                    track.difficulty.equals(difficulty, ignoreCase = true)
+
             val matchesDistance = (minDistance == null || track.distanceKm >= minDistance) &&
-                (maxDistance == null || track.distanceKm <= maxDistance)
-            
+                    (maxDistance == null || track.distanceKm <= maxDistance)
+
             matchesQuery && matchesDifficulty && matchesDistance
         }
     }
-    
+
     fun sortTracks(
         tracks: List<LocalTrack>,
         sortBy: SortOption,
@@ -101,10 +101,10 @@ object DataUtils {
             SortOption.DIFFICULTY -> tracks.sortedBy { it.difficulty }
             SortOption.LOCATION -> tracks.sortedBy { it.location }
         }
-        
+
         return if (ascending) sorted else sorted.reversed()
     }
-    
+
     fun calculateStats(tracks: List<LocalTrack>): TrackStats {
         return TrackStats(
             totalTracks = tracks.size,

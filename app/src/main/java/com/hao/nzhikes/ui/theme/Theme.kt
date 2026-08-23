@@ -15,15 +15,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = AlpineGreen, onPrimary = Color(0xFF00391F),
-    primaryContainer = DarkForestContainer, onPrimaryContainer = Color(0xFFA9F2C2),
-    secondary = DarkLakeTeal, onSecondary = Color(0xFF003737),
-    secondaryContainer = DarkLakeContainer, onSecondaryContainer = Color(0xFF9CF1EF),
-    tertiary = DarkTussockGold, onTertiary = Color(0xFF492900),
-    tertiaryContainer = DarkTussockContainer, onTertiaryContainer = Color(0xFFFFDDB8),
-    background = NightBackground, onBackground = NightInk,
-    surface = NightSurface, onSurface = NightInk,
-    surfaceVariant = NightSurfaceVariant, onSurfaceVariant = NightMutedInk,
+    primary = AlpineGreen,
+    onPrimary = Color(0xFF00391F),
+    primaryContainer = DarkForestContainer,
+    onPrimaryContainer = Color(0xFFA9F2C2),
+    secondary = DarkLakeTeal,
+    onSecondary = Color(0xFF003737),
+    secondaryContainer = DarkLakeContainer,
+    onSecondaryContainer = Color(0xFF9CF1EF),
+    tertiary = DarkTussockGold,
+    onTertiary = Color(0xFF492900),
+    tertiaryContainer = DarkTussockContainer,
+    onTertiaryContainer = Color(0xFFFFDDB8),
+    background = NightBackground,
+    onBackground = NightInk,
+    surface = NightSurface,
+    onSurface = NightInk,
+    surfaceVariant = NightSurfaceVariant,
+    onSurfaceVariant = NightMutedInk,
     outline = DarkOutline
 )
 

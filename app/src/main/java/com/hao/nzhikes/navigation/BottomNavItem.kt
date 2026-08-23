@@ -1,12 +1,12 @@
 package com.hao.nzhikes.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.annotation.StringRes
 import com.hao.nzhikes.R
 
 sealed class BottomNavItem(

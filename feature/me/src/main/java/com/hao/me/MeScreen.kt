@@ -31,11 +31,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,7 +61,7 @@ private object MeScreenConstants {
     val SMALL_ICON_SIZE = 20.dp
     val SMALL_SPACING = 8.dp
     val MEDIUM_SPACING = 12.dp
-    
+
 }
 
 @HiltViewModel
@@ -111,7 +111,7 @@ fun MeScreen() {
     val favoriteCount by viewModel.favoriteCount.collectAsStateWithLifecycle()
     val doneCount by viewModel.doneCount.collectAsStateWithLifecycle()
     val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -298,19 +298,19 @@ private fun AppInfoSection() {
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary
         )
-        
+
         Text(
             text = stringResource(R.string.app_display_name),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium
         )
-        
+
         Text(
             text = stringResource(R.string.app_version),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        
+
         Text(
             text = stringResource(R.string.app_description),
             style = MaterialTheme.typography.bodySmall,

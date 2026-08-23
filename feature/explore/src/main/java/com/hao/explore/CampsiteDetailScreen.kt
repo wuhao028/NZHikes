@@ -1,5 +1,6 @@
 package com.hao.explore
 
+// Preview imports
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,16 +23,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Pets
-import androidx.compose.material.icons.filled.Power
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Power
 import androidx.compose.material.icons.filled.Wc
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,35 +42,29 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.hao.data.model.Campsite
-import com.hao.ui.R as UiR
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-
-// Preview imports
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.hao.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,11 +80,11 @@ fun CampsiteDetailScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(
                         text = uiState.details?.name ?: stringResource(R.string.campsite_details),
                         style = MaterialTheme.typography.titleMedium
-                    ) 
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -153,7 +147,7 @@ private fun CampsiteDetailContent(
     ) {
         // Hero Image Section
         HeroImageSection(details = details)
-        
+
         // Content Section
         Column(
             modifier = Modifier.padding(16.dp),
@@ -161,30 +155,30 @@ private fun CampsiteDetailContent(
         ) {
             // Basic Info Card
             BasicInfoCard(details = details)
-            
+
             // Location Card with Map
             LocationCard(details = details)
-            
+
             // Category Card
             if (!details.category.isNullOrBlank()) {
                 CategoryCard(category = details.category)
             }
-            
+
             // Facilities Card
             if (details.facilities?.isNotEmpty() == true) {
                 FacilitiesCard(facilities = details.facilities)
             }
-            
+
             // Access Card
             if (details.access?.isNotEmpty() == true) {
                 AccessCard(access = details.access)
             }
-            
+
             // Activities Card
             if (details.activities?.isNotEmpty() == true) {
                 ActivitiesCard(activities = details.activities)
             }
-            
+
             // Introduction
             if (!details.introduction.isNullOrBlank()) {
                 IntroductionCard(introduction = details.introduction)
@@ -217,7 +211,7 @@ private fun HeroImageSection(details: CampsiteDetails) {
                 contentScale = ContentScale.Crop
             )
         }
-        
+
         // Gradient overlay
         Box(
             modifier = Modifier
@@ -226,7 +220,7 @@ private fun HeroImageSection(details: CampsiteDetails) {
                     Color.Black.copy(alpha = 0.3f)
                 )
         )
-        
+
         // Campsite name
         Column(
             modifier = Modifier
@@ -239,7 +233,7 @@ private fun HeroImageSection(details: CampsiteDetails) {
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
-            
+
             if (!details.locationString.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(
@@ -279,9 +273,9 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             HorizontalDivider()
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -308,7 +302,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(1f)
@@ -332,7 +326,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                     )
                 }
             }
-            
+
             if (!details.dogsAllowed.isNullOrBlank()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -350,7 +344,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                     )
                 }
             }
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -369,7 +363,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                         )
                     }
                 }
-                
+
                 if (!details.status.isNullOrBlank()) {
                     val statusColor = when (details.status.lowercase()) {
                         "open" -> MaterialTheme.colorScheme.tertiaryContainer
@@ -381,7 +375,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                         "closed" -> MaterialTheme.colorScheme.onErrorContainer
                         else -> MaterialTheme.colorScheme.onSecondaryContainer
                     }
-                    
+
                     Surface(
                         color = statusColor,
                         shape = RoundedCornerShape(8.dp)
@@ -420,20 +414,20 @@ private fun LocationCard(details: CampsiteDetails) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             HorizontalDivider()
-            
+
             if (!details.region.isNullOrBlank()) {
                 InfoRow("Region", details.region)
             }
-            
+
             if (!details.place.isNullOrBlank()) {
                 InfoRow("Place", details.place)
             }
-            
+
             if (details.latitude != null && details.longitude != null) {
                 InfoRow("Coordinates", "${details.latitude}, ${details.longitude}")
-                
+
                 // Map section
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -475,7 +469,7 @@ private fun CampsiteMapCard(
             },
             update = { mapView ->
                 mapView.overlayManager.clear()
-                
+
                 // Check if coordinates need conversion (if they're in NZTM format)
                 val geoPoint = if (latitude > 1000000 || longitude > 1000000) {
                     // These look like NZTM coordinates, convert them
@@ -485,7 +479,7 @@ private fun CampsiteMapCard(
                     // These look like WGS84 coordinates, use them directly
                     GeoPoint(latitude, longitude)
                 }
-                
+
                 val marker = Marker(mapView).apply {
                     position = geoPoint
                     title = name
@@ -555,9 +549,9 @@ private fun FacilitiesCard(facilities: List<String>) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             HorizontalDivider()
-            
+
             facilities.forEach { facility ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -596,9 +590,9 @@ private fun AccessCard(access: List<String>) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             HorizontalDivider()
-            
+
             access.forEach { accessMethod ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -637,9 +631,9 @@ private fun ActivitiesCard(activities: List<String>) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             HorizontalDivider()
-            
+
             activities.forEach { activity ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -678,9 +672,9 @@ private fun IntroductionCard(introduction: String) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             HorizontalDivider()
-            
+
             Text(
                 text = introduction,
                 style = MaterialTheme.typography.bodyMedium,
@@ -764,7 +758,7 @@ private fun CampsiteDetailContentPreview() {
         latitude = -44.5,
         longitude = 169.1
     )
-    
+
     val sampleCampsite = Campsite(
         assetId = "sample-123",
         name = "Beautiful Lakeside Campsite",
@@ -773,7 +767,7 @@ private fun CampsiteDetailContentPreview() {
         y = -44.5,
         x = 169.1
     )
-    
+
     CampsiteDetailContent(
         campsite = sampleCampsite,
         details = sampleDetails

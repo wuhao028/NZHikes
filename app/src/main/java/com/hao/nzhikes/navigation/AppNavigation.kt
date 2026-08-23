@@ -5,17 +5,17 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -61,92 +61,92 @@ fun AppNavigation() {
                 navController = navController,
                 startDestination = BottomNavItem.Home.route,
             ) {
-            composable(BottomNavItem.Home.route) {
-                HomeScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onSearchClick = { searchType ->
-                        navController.navigate("${BottomNavItem.Search.route}/$searchType")
-                    },
-                    onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") },
-                    onCampsiteClick = { campsite -> navController.navigate("campsite/${campsite.assetId}") },
-                    onHutClick = { hut -> navController.navigate("hut/${hut.assetId}") },
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this
-                )
-            }
-            composable(BottomNavItem.Trips.route) {
-                TripsScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
-                )
-            }
-            composable(BottomNavItem.Me.route) {
-                MeScreen()
-            }
-            composable(
-                route = "${BottomNavItem.Search.route}/{searchType}",
-                arguments = listOf(navArgument("searchType") { type = NavType.IntType })
-            ) {
-                SearchScreen(
-                    onItemClick = { result ->
-                        when (result) {
-                            is SearchResult.TrackResult -> {
-                                Log.d(
-                                    "AppNavigation",
-                                    "Navigating to track: ${result.track.assetId}"
-                                )
-                                navController.navigate("track/${result.track.assetId}") {
-                                    popUpTo(BottomNavItem.Home.route)
+                composable(BottomNavItem.Home.route) {
+                    HomeScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onSearchClick = { searchType ->
+                            navController.navigate("${BottomNavItem.Search.route}/$searchType")
+                        },
+                        onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") },
+                        onCampsiteClick = { campsite -> navController.navigate("campsite/${campsite.assetId}") },
+                        onHutClick = { hut -> navController.navigate("hut/${hut.assetId}") },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this
+                    )
+                }
+                composable(BottomNavItem.Trips.route) {
+                    TripsScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") }
+                    )
+                }
+                composable(BottomNavItem.Me.route) {
+                    MeScreen()
+                }
+                composable(
+                    route = "${BottomNavItem.Search.route}/{searchType}",
+                    arguments = listOf(navArgument("searchType") { type = NavType.IntType })
+                ) {
+                    SearchScreen(
+                        onItemClick = { result ->
+                            when (result) {
+                                is SearchResult.TrackResult -> {
+                                    Log.d(
+                                        "AppNavigation",
+                                        "Navigating to track: ${result.track.assetId}"
+                                    )
+                                    navController.navigate("track/${result.track.assetId}") {
+                                        popUpTo(BottomNavItem.Home.route)
+                                    }
                                 }
-                            }
 
-                            is SearchResult.CampsiteResult -> {
-                                navController.navigate("campsite/${result.campsite.assetId}") {
-                                    launchSingleTop = true
+                                is SearchResult.CampsiteResult -> {
+                                    navController.navigate("campsite/${result.campsite.assetId}") {
+                                        launchSingleTop = true
+                                    }
                                 }
-                            }
 
-                            is SearchResult.HutResult -> {
-                                navController.navigate("hut/${result.hut.assetId}") {
-                                    launchSingleTop = true
+                                is SearchResult.HutResult -> {
+                                    navController.navigate("hut/${result.hut.assetId}") {
+                                        launchSingleTop = true
+                                    }
                                 }
                             }
-                        }
-                    },
-                    onCancel = { navController.popBackStack() },
-                    sharedTransitionScope = this@SharedTransitionLayout,
-                    animatedVisibilityScope = this
-                )
+                        },
+                        onCancel = { navController.popBackStack() },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this
+                    )
+                }
+                composable(
+                    route = "track/{assetId}",
+                    arguments = listOf(navArgument("assetId") { type = NavType.StringType })
+                ) {
+                    TrackDetailScreen(
+                        onBackClick = { navController.navigateUp() }
+                    )
+                }
+
+                composable(
+                    route = "campsite/{assetId}",
+                    arguments = listOf(navArgument("assetId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    CampsiteDetailScreen(
+                        onBackClick = { navController.navigateUp() },
+                        viewModel = hiltViewModel()
+                    )
+                }
+
+                composable(
+                    route = "hut/{assetId}",
+                    arguments = listOf(navArgument("assetId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    HutDetailScreen(
+                        onBackClick = { navController.navigateUp() },
+                        viewModel = hiltViewModel()
+                    )
+                }
             }
-            composable(
-                route = "track/{assetId}",
-                arguments = listOf(navArgument("assetId") { type = NavType.StringType })
-            ) {
-                TrackDetailScreen(
-                    onBackClick = { navController.navigateUp() }
-                )
-            }
-            
-            composable(
-                route = "campsite/{assetId}",
-                arguments = listOf(navArgument("assetId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                CampsiteDetailScreen(
-                    onBackClick = { navController.navigateUp() },
-                    viewModel = hiltViewModel()
-                )
-            }
-            
-            composable(
-                route = "hut/{assetId}",
-                arguments = listOf(navArgument("assetId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                HutDetailScreen(
-                    onBackClick = { navController.navigateUp() },
-                    viewModel = hiltViewModel()
-                )
-            }
-        }
         }
     }
 }
