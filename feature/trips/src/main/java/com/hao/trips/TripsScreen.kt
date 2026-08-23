@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.model.LocalTrack
@@ -55,6 +57,29 @@ fun TripsScreen(
                 onToggleFavorite = viewModel::toggleFavorite
             )
         }
+    }
+}
+
+@Preview(name = "Favourite trips", showBackground = true, widthDp = 390, heightDp = 640)
+@Composable
+private fun FavouriteScreenPreview() {
+    MaterialTheme {
+        FavouriteScreen(
+            hikes = listOf(
+                LocalTrack(
+                    assetId = "routeburn",
+                    name = "Routeburn Track",
+                    location = "Fiordland / Mt Aspiring",
+                    distanceKm = 32.0,
+                    duration = "2–4 days",
+                    difficulty = "Intermediate",
+                    imageRes = com.hao.ui.R.drawable.routeburn,
+                    isFavorite = true
+                )
+            ),
+            onToggleFavorite = {},
+            onHikeClick = {}
+        )
     }
 }
 

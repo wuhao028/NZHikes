@@ -2,6 +2,9 @@ package com.hao.explore
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -57,6 +60,7 @@ import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
 import com.hao.data.model.LocalTrack
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -64,6 +68,8 @@ fun HomeScreen(
     onHikeClick: (LocalTrack) -> Unit,
     onCampsiteClick: (Campsite) -> Unit = {},
     onHutClick: (Hut) -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -109,6 +115,8 @@ fun HomeScreen(
             SearchBar(
                 onSearchClick = { onSearchClick(selectedTabIndex) },
                 placeholder = searchPlaceholder,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -272,6 +280,25 @@ private fun HomeCategoryTabsPreview() {
     }
 }
 
+@Preview(name = "Home search and list items", showBackground = true, widthDp = 390, heightDp = 360)
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun HomeListItemsPreview() {
+    MaterialTheme {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            SearchBar(onSearchClick = {}, placeholder = "Search for a campsite")
+            CampsiteItem(
+                campsite = Campsite("camp-preview", "Lake Rotoiti Campsite", "Open", "Nelson Lakes"),
+                onClick = {}
+            )
+            HutItem(
+                hut = Hut("hut-preview", "Mueller Hut", "Open", "Aoraki / Mt Cook"),
+                onClick = {}
+            )
+        }
+    }
+}
+
 @Composable
 private fun TracksList(
     modifier: Modifier = Modifier,
@@ -407,12 +434,27 @@ private fun HutItem(hut: Hut, onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SearchBar(
     onSearchClick: () -> Unit,
     placeholder: String = "Search for a track",
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
     modifier: Modifier = Modifier
 ) {
+    val sharedBoundsModifier = if (
+        sharedTransitionScope != null && animatedVisibilityScope != null
+    ) {
+        with(sharedTransitionScope) {
+            Modifier.sharedBounds(
+                sharedContentState = rememberSharedContentState(key = "home-search-field"),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        }
+    } else {
+        Modifier
+    }
     Box(
         modifier = Modifier
             .padding(16.dp)
@@ -435,7 +477,9 @@ fun SearchBar(
                 disabledPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 disabledLeadingIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(sharedBoundsModifier)
         )
     }
 }

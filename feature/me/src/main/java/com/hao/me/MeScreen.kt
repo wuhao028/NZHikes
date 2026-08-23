@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -378,4 +379,19 @@ private fun StatsCard(
 @Composable
 private fun getCardBackgroundColor(): Color {
     return MaterialTheme.colorScheme.surface
+}
+
+@Preview(name = "Profile and settings", showBackground = true, widthDp = 390, heightDp = 760)
+@Composable
+private fun MeScreenContentPreview() {
+    MaterialTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            ProfileCard(isDarkMode = false)
+            StatsCard(favoriteCount = 6, doneCount = 3, isDarkMode = false)
+            SettingsCard(isDarkMode = false, onDarkModeChange = {})
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.hao.nzhikes.navigation
 
 import android.util.Log
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -12,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -31,6 +34,7 @@ import com.hao.explore.model.SearchResult
 import com.hao.me.MeScreen
 import com.hao.trips.TripsScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -51,10 +55,11 @@ fun AppNavigation() {
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = BottomNavItem.Home.route,
-        ) {
+        SharedTransitionLayout {
+            NavHost(
+                navController = navController,
+                startDestination = BottomNavItem.Home.route,
+            ) {
             composable(BottomNavItem.Home.route) {
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -63,7 +68,9 @@ fun AppNavigation() {
                     },
                     onHikeClick = { hike -> navController.navigate("track/${hike.assetId}") },
                     onCampsiteClick = { campsite -> navController.navigate("campsite/${campsite.assetId}") },
-                    onHutClick = { hut -> navController.navigate("hut/${hut.assetId}") }
+                    onHutClick = { hut -> navController.navigate("hut/${hut.assetId}") },
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this
                 )
             }
             composable(BottomNavItem.Trips.route) {
@@ -105,7 +112,9 @@ fun AppNavigation() {
                             }
                         }
                     },
-                    onCancel = { navController.popBackStack() }
+                    onCancel = { navController.popBackStack() },
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this
                 )
             }
             composable(
@@ -136,6 +145,7 @@ fun AppNavigation() {
                     viewModel = hiltViewModel()
                 )
             }
+        }
         }
     }
 }
@@ -177,5 +187,13 @@ fun BottomNavBar(navController: NavHostController) {
                 )
             )
         }
+    }
+}
+
+@Preview(name = "Bottom navigation", showBackground = true, widthDp = 390)
+@Composable
+private fun BottomNavBarPreview() {
+    MaterialTheme {
+        BottomNavBar(navController = rememberNavController())
     }
 }

@@ -24,6 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 
 object Spacing {
     val xs = 4.dp
@@ -32,6 +35,25 @@ object Spacing {
     val lg = 16.dp
     val xl = 24.dp
     val xxl = 32.dp
+}
+
+@Preview(name = "Common components", showBackground = true, widthDp = 390)
+@Composable
+private fun CommonComponentsPreview() {
+    MaterialTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            TitledCard(title = "Track details", icon = Icons.Default.Info) {
+                InfoRow(label = "Distance", value = "12.4 km")
+                InfoRow(label = "Duration", value = "4 hr")
+            }
+            StatsCard(title = "Completed walks", value = "8", subtitle = "This year")
+            LoadingState(message = "Loading tracks…")
+            ErrorState(message = "Unable to load this track")
+        }
+    }
 }
 
 object CornerRadius {

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.hao.data.model.LocalTrack
 
@@ -98,5 +99,26 @@ fun HikeCardVertical(
                 Text("Duration: ${hike.duration}", style = MaterialTheme.typography.bodySmall)
             }
         }
+    }
+}
+
+@Preview(name = "Track card", showBackground = true, widthDp = 200)
+@Composable
+private fun HikeCardVerticalPreview() {
+    MaterialTheme {
+        HikeCardVertical(
+            hike = LocalTrack(
+                assetId = "milford-track",
+                name = "Milford Track",
+                location = "Fiordland",
+                distanceKm = 53.5,
+                duration = "4 days",
+                difficulty = "Intermediate",
+                imageRes = R.drawable.milford,
+                isFavorite = true
+            ),
+            onToggleFavorite = {},
+            onClick = {}
+        )
     }
 }

@@ -1,5 +1,8 @@
 package com.hao.explore
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,25 +47,43 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
 import com.hao.explore.model.SearchResult
+import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     onItemClick: (SearchResult) -> Unit,
-    onCancel: () -> Unit = {}
+    onCancel: () -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null
 ) {
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
     val focusRequester = remember { FocusRequester() }
+    val sharedBoundsModifier = if (
+        sharedTransitionScope != null && animatedVisibilityScope != null
+    ) {
+        with(sharedTransitionScope) {
+            Modifier.sharedBounds(
+                sharedContentState = rememberSharedContentState(key = "home-search-field"),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        }
+    } else {
+        Modifier
+    }
 
     LaunchedEffect(Unit) {
+        // Let the shared search field settle before the keyboard changes the window insets.
+        delay(250)
         focusRequester.requestFocus()
     }
 
@@ -75,6 +96,7 @@ fun SearchScreen(
                         onValueChange = { viewModel.onSearchQueryChanged(it) },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .then(sharedBoundsModifier)
                             .focusRequester(focusRequester),
                         placeholder = { Text("Search tracks, huts, campsites...") },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
@@ -505,6 +527,37 @@ private fun HutSearchItem(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "Search result cards", showBackground = true, widthDp = 390, heightDp = 360)
+@Composable
+private fun SearchResultCardsPreview() {
+    MaterialTheme {
+        Column(
+            modifier = Modifier.padding(vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            TrackSearchItem(
+                track = RemoteTrack(
+                    assetId = "track-1",
+                    name = "Tongariro Alpine Crossing",
+                    region = listOf("Central North Island"),
+                    x = 175.6,
+                    y = -39.1,
+                    line = emptyList()
+                ),
+                onClick = {}
+            )
+            CampsiteSearchItem(
+                campsite = Campsite("camp-1", "Lake Rotoiti Campsite", "Open", "Nelson Lakes"),
+                onClick = {}
+            )
+            HutSearchItem(
+                hut = Hut("hut-1", "Mueller Hut", "Open", "Aoraki / Mt Cook"),
+                onClick = {}
+            )
         }
     }
 }

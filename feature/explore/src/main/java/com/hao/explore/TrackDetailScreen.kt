@@ -44,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -319,6 +320,18 @@ fun RowScope.InfoCard(icon: ImageVector, label: String, value: String) {
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
+        }
+    }
+}
+
+@Preview(name = "Track information cards", showBackground = true, widthDp = 390)
+@Composable
+private fun TrackInfoCardsPreview() {
+    MaterialTheme {
+        Row(modifier = Modifier.padding(12.dp)) {
+            InfoCard(Icons.Default.Hiking, "Distance", "19.4 km")
+            InfoCard(Icons.Default.Schedule, "Duration", "7–8 hr")
+            InfoCard(Icons.Default.Terrain, "Difficulty", "Advanced")
         }
     }
 }
