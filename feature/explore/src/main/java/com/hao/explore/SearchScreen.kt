@@ -3,6 +3,7 @@ package com.hao.explore
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -76,7 +77,8 @@ fun SearchScreen(
         with(sharedTransitionScope) {
             Modifier.sharedBounds(
                 sharedContentState = rememberSharedContentState(key = "home-search-field"),
-                animatedVisibilityScope = animatedVisibilityScope
+                animatedVisibilityScope = animatedVisibilityScope,
+                boundsTransform = { _, _ -> tween(durationMillis = 220) }
             )
         }
     } else {
@@ -85,7 +87,7 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         // Let the shared search field settle before the keyboard changes the window insets.
-        delay(250)
+        delay(180)
         focusRequester.requestFocus()
     }
 
