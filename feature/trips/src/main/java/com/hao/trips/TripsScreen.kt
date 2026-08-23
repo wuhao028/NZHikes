@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.model.LocalTrack
@@ -32,7 +33,7 @@ fun TripsScreen(
     val favoriteHikes by viewModel.favoriteHikes.collectAsStateWithLifecycle()
     val doneHikes by viewModel.doneHikes.collectAsStateWithLifecycle()
     var tabIndex by remember { mutableStateOf(0) }
-    val tabs = listOf("Favourite", "Done")
+    val tabs = listOf(stringResource(R.string.favourite_tab), stringResource(R.string.done_tab))
 
     Column(modifier = modifier) {
         TabRow(selectedTabIndex = tabIndex) {

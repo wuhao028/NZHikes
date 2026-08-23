@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,20 +62,6 @@ private object MeScreenConstants {
     val SMALL_SPACING = 8.dp
     val MEDIUM_SPACING = 12.dp
     
-    const val PROFILE_TITLE = "Profile"
-    const val SETTINGS_TITLE = "Settings"
-    const val USER_NAME = "NZ Hikes User"
-    const val USER_DESCRIPTION = "Explore the beautiful trails of New Zealand"
-    const val DARK_MODE_LABEL = "Dark Mode"
-    const val DARK_MODE_ENABLED = "Enabled"
-    const val DARK_MODE_DISABLED = "Disabled"
-    const val APP_INFO_TITLE = "App Information"
-    const val APP_NAME = "NZ Hikes"
-    const val APP_VERSION = "Version 1.0.0"
-    const val APP_DESCRIPTION =
-        "Discover and explore hiking trails, campsites, and huts across New Zealand"
-    const val FAVOURITES_LABEL = "Favourites"
-    const val COMPLETED_LABEL = "Completed"
 }
 
 @HiltViewModel
@@ -179,7 +167,7 @@ private fun ProfileHeader() {
         )
         Spacer(modifier = Modifier.width(MeScreenConstants.MEDIUM_SPACING))
         Text(
-            text = MeScreenConstants.PROFILE_TITLE,
+            text = stringResource(R.string.profile_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -190,13 +178,13 @@ private fun ProfileHeader() {
 private fun ProfileContent() {
     Column {
         Text(
-            text = MeScreenConstants.USER_NAME,
+            text = stringResource(R.string.user_name),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium
         )
 
         Text(
-            text = MeScreenConstants.USER_DESCRIPTION,
+            text = stringResource(R.string.user_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -245,7 +233,7 @@ private fun SettingsHeader() {
         )
         Spacer(modifier = Modifier.width(MeScreenConstants.MEDIUM_SPACING))
         Text(
-            text = MeScreenConstants.SETTINGS_TITLE,
+            text = stringResource(R.string.settings_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -284,12 +272,14 @@ private fun DarkModeInfo(isDarkMode: Boolean) {
         Spacer(modifier = Modifier.width(MeScreenConstants.MEDIUM_SPACING))
         Column {
             Text(
-                text = MeScreenConstants.DARK_MODE_LABEL,
+                text = stringResource(R.string.dark_mode_label),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = if (isDarkMode) MeScreenConstants.DARK_MODE_ENABLED else MeScreenConstants.DARK_MODE_DISABLED,
+                text = stringResource(
+                    if (isDarkMode) R.string.dark_mode_enabled else R.string.dark_mode_disabled
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -303,26 +293,26 @@ private fun AppInfoSection() {
         verticalArrangement = Arrangement.spacedBy(MeScreenConstants.SMALL_SPACING)
     ) {
         Text(
-            text = MeScreenConstants.APP_INFO_TITLE,
+            text = stringResource(R.string.app_info_title),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary
         )
         
         Text(
-            text = MeScreenConstants.APP_NAME,
+            text = stringResource(R.string.app_display_name),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium
         )
         
         Text(
-            text = MeScreenConstants.APP_VERSION,
+            text = stringResource(R.string.app_version),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         
         Text(
-            text = MeScreenConstants.APP_DESCRIPTION,
+            text = stringResource(R.string.app_description),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -361,13 +351,21 @@ private fun StatsCard(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "${MeScreenConstants.FAVOURITES_LABEL} $favoriteCount",
+                    text = pluralStringResource(
+                        R.plurals.favourites_count,
+                        favoriteCount,
+                        favoriteCount
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(MeScreenConstants.SMALL_SPACING))
                 Text(
-                    text = "${MeScreenConstants.COMPLETED_LABEL} $doneCount",
+                    text = pluralStringResource(
+                        R.plurals.completed_count,
+                        doneCount,
+                        doneCount
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

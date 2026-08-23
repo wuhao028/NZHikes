@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DirectionsWalk
@@ -31,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,6 +50,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
@@ -98,8 +102,20 @@ fun SearchScreen(
                             .fillMaxWidth()
                             .then(sharedBoundsModifier)
                             .focusRequester(focusRequester),
-                        placeholder = { Text("Search tracks, huts, campsites...") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                        placeholder = { Text(stringResource(R.string.search_all_hint)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search)) },
+                        shape = RoundedCornerShape(28.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.65f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.65f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                            unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            cursorColor = MaterialTheme.colorScheme.primary
+                        ),
                         singleLine = true
                     )
                 },
@@ -107,7 +123,7 @@ fun SearchScreen(
                     IconButton(onClick = onCancel) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 }
@@ -122,7 +138,11 @@ fun SearchScreen(
             // Result count header
             if (searchQuery.isNotBlank() && searchResults.isNotEmpty()) {
                 Text(
-                    text = "${searchResults.size} result${if (searchResults.size != 1) "s" else ""} found",
+                    text = pluralStringResource(
+                        R.plurals.search_results_found,
+                        searchResults.size,
+                        searchResults.size
+                    ),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -147,12 +167,12 @@ fun SearchScreen(
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                         Text(
-                            text = "No results found",
+                            text = stringResource(R.string.no_results_found),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "Try a different search term",
+                            text = stringResource(R.string.try_different_search),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -175,12 +195,12 @@ fun SearchScreen(
                             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         )
                         Text(
-                            text = "Search for hiking tracks, huts, and campsites",
+                            text = stringResource(R.string.search_intro),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "All data is available offline",
+                            text = stringResource(R.string.offline_data_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -250,7 +270,7 @@ private fun TrackSearchItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.DirectionsWalk,
-                    contentDescription = "Track",
+                    contentDescription = stringResource(R.string.tracks),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(24.dp)
                 )
@@ -296,7 +316,7 @@ private fun TrackSearchItem(
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = "Track",
+                        text = stringResource(R.string.tracks),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -335,7 +355,7 @@ private fun CampsiteSearchItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.Terrain,
-                    contentDescription = "Campsite",
+                    contentDescription = stringResource(R.string.campsite),
                     tint = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier.size(24.dp)
                 )
@@ -347,7 +367,7 @@ private fun CampsiteSearchItem(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = campsite.name ?: "Unnamed Campsite",
+                    text = campsite.name ?: stringResource(R.string.unnamed_campsite),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
@@ -384,7 +404,7 @@ private fun CampsiteSearchItem(
                         shape = MaterialTheme.shapes.small
                     ) {
                         Text(
-                            text = "Campsite",
+                            text = stringResource(R.string.campsite),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -447,7 +467,7 @@ private fun HutSearchItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.Home,
-                    contentDescription = "Hut",
+                    contentDescription = stringResource(R.string.hut),
                     tint = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.size(24.dp)
                 )
@@ -459,7 +479,7 @@ private fun HutSearchItem(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = hut.name ?: "Unnamed Hut",
+                    text = hut.name ?: stringResource(R.string.unnamed_hut),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
@@ -496,7 +516,7 @@ private fun HutSearchItem(
                         shape = MaterialTheme.shapes.small
                     ) {
                         Text(
-                            text = "Hut",
+                            text = stringResource(R.string.hut),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)

@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import org.junit.Assert.*
 import org.junit.Test
+import com.hao.nzhikes.R
 
 class BottomNavItemTest {
 
@@ -18,7 +19,7 @@ class BottomNavItemTest {
         // Then
         assertEquals("home", home.route)
         assertEquals(Icons.Default.Home, home.icon)
-        assertEquals("Home", home.title)
+        assertEquals(R.string.nav_home, home.titleRes)
     }
 
     @Test
@@ -29,7 +30,7 @@ class BottomNavItemTest {
         // Then
         assertEquals("trips", trips.route)
         assertEquals(Icons.Default.Place, trips.icon)
-        assertEquals("Trips", trips.title)
+        assertEquals(R.string.nav_trips, trips.titleRes)
     }
 
     @Test
@@ -40,7 +41,7 @@ class BottomNavItemTest {
         // Then
         assertEquals("me", me.route)
         assertEquals(Icons.Default.Person, me.icon)
-        assertEquals("Me", me.title)
+        assertEquals(R.string.nav_me, me.titleRes)
     }
 
     @Test
@@ -51,7 +52,7 @@ class BottomNavItemTest {
         // Then
         assertEquals("search", search.route)
         assertEquals(Icons.Default.Search, search.icon)
-        assertEquals("Search", search.title)
+        assertEquals(R.string.nav_search, search.titleRes)
     }
 
     @Test
@@ -66,7 +67,7 @@ class BottomNavItemTest {
 
         // When
         val routes = items.map { it.route }
-        val titles = items.map { it.title }
+        val titles = items.map { it.titleRes }
 
         // Then
         assertEquals(routes.size, routes.distinct().size)
@@ -86,7 +87,7 @@ class BottomNavItemTest {
         // Then
         items.forEach { item ->
             assertTrue("Route should not be empty", item.route.isNotEmpty())
-            assertTrue("Title should not be empty", item.title.isNotEmpty())
+            assertTrue("Title resource should be valid", item.titleRes != 0)
             assertNotNull("Icon should not be null", item.icon)
         }
     }
@@ -125,7 +126,7 @@ class BottomNavItemTest {
     }
 
     @Test
-    fun `navigation items should have meaningful titles`() {
+    fun `navigation items should have valid title resources`() {
         // Given
         val items = listOf(
             BottomNavItem.Home,
@@ -136,8 +137,7 @@ class BottomNavItemTest {
 
         // Then
         items.forEach { item ->
-            assertTrue("Title should be capitalized", item.title[0].isUpperCase())
-            assertTrue("Title should be meaningful", item.title.length > 0)
+            assertTrue("Title resource should be valid", item.titleRes != 0)
         }
     }
 

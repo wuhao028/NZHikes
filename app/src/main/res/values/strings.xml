@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NZHikes</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_trips">Trips</string>
+    <string name="nav_me">Me</string>
+    <string name="nav_search">Search</string>
 </resources>

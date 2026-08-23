@@ -1,0 +1,8 @@
+<resources>
+    <string name="favorite">Favorite</string>
+    <string name="hike_difficulty">Difficulty: %1$s</string>
+    <string name="hike_distance">Distance: %1$.1f km</string>
+    <string name="hike_duration">Duration: %1$s</string>
+    <string name="loading">Loading…</string>
+    <string name="error_title">Error</string>
+</resources>

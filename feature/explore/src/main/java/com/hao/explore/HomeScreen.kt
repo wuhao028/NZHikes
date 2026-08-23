@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
@@ -106,12 +107,14 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
         Column {
             // Search bar
-            val searchPlaceholder = when (selectedTabIndex) {
-                0 -> "Search for a track"
-                1 -> "Search for a campsite"
-                2 -> "Search for a hut"
-                else -> "Search"
-            }
+            val searchPlaceholder = stringResource(
+                when (selectedTabIndex) {
+                    0 -> R.string.search_track_hint
+                    1 -> R.string.search_campsite_hint
+                    2 -> R.string.search_hut_hint
+                    else -> R.string.search
+                }
+            )
             SearchBar(
                 onSearchClick = { onSearchClick(selectedTabIndex) },
                 placeholder = searchPlaceholder,
@@ -160,7 +163,11 @@ private fun HomeCategoryTabs(
     onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tabs = listOf("Tracks", "Campsite", "Hut")
+    val tabs = listOf(
+        stringResource(R.string.tracks),
+        stringResource(R.string.campsite),
+        stringResource(R.string.hut)
+    )
     val icons = listOf(Icons.Default.Terrain, Icons.Default.Forest, Icons.Default.Cabin)
     val iconColors = listOf(
         Color(0xFF2E7D32),
@@ -286,7 +293,10 @@ private fun HomeCategoryTabsPreview() {
 private fun HomeListItemsPreview() {
     MaterialTheme {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            SearchBar(onSearchClick = {}, placeholder = "Search for a campsite")
+            SearchBar(
+                onSearchClick = {},
+                placeholder = stringResource(R.string.search_campsite_hint)
+            )
             CampsiteItem(
                 campsite = Campsite("camp-preview", "Lake Rotoiti Campsite", "Open", "Nelson Lakes"),
                 onClick = {}
@@ -438,11 +448,12 @@ private fun HutItem(hut: Hut, onClick: () -> Unit) {
 @Composable
 fun SearchBar(
     onSearchClick: () -> Unit,
-    placeholder: String = "Search for a track",
+    placeholder: String? = null,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
     modifier: Modifier = Modifier
 ) {
+    val resolvedPlaceholder = placeholder ?: stringResource(R.string.search_track_hint)
     val sharedBoundsModifier = if (
         sharedTransitionScope != null && animatedVisibilityScope != null
     ) {
@@ -466,17 +477,19 @@ fun SearchBar(
             onValueChange = {},
             enabled = false,
             leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = "Search Icon")
+                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_icon))
             },
             placeholder = {
-                Text(text = placeholder)
+                Text(text = resolvedPlaceholder)
             },
             colors = OutlinedTextFieldDefaults.colors(
-                disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                disabledPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                disabledLeadingIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                disabledBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.65f),
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledLeadingIconColor = MaterialTheme.colorScheme.primary
             ),
+            shape = RoundedCornerShape(28.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .then(sharedBoundsModifier)

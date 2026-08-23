@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.hao.data.model.Hut
-import com.hao.ui.R
+import com.hao.ui.R as UiR
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -86,7 +87,7 @@ fun HutDetailScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = uiState.details?.name ?: "Hut Details",
+                        text = uiState.details?.name ?: stringResource(R.string.hut_details),
                         style = MaterialTheme.typography.titleMedium
                     ) 
                 },
@@ -94,7 +95,7 @@ fun HutDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -197,15 +198,15 @@ private fun HeroImageSection(details: HutDetails) {
         if (!details.introductionThumbnail.isNullOrBlank()) {
             AsyncImage(
                 model = details.introductionThumbnail,
-                contentDescription = "Hut image",
+                contentDescription = stringResource(R.string.hut_image),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
         } else {
             // Fallback to hut image
             Image(
-                painter = painterResource(id = R.drawable.ic_hut),
-                contentDescription = "Hut image",
+                painter = painterResource(id = UiR.drawable.ic_hut),
+                contentDescription = stringResource(R.string.hut_image),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -227,7 +228,7 @@ private fun HeroImageSection(details: HutDetails) {
                 .padding(16.dp)
         ) {
             Text(
-                text = details.name ?: "Hut",
+                text = details.name ?: stringResource(R.string.hut),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
@@ -268,7 +269,7 @@ private fun BasicInfoCard(details: HutDetails) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Basic Information",
+                text = stringResource(R.string.basic_information),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -296,7 +297,7 @@ private fun BasicInfoCard(details: HutDetails) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Bunks",
+                        text = stringResource(R.string.bunks),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -314,12 +315,13 @@ private fun BasicInfoCard(details: HutDetails) {
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = details.proximityToRoadEnd ?: "N/A",
+                        text = details.proximityToRoadEnd
+                            ?: stringResource(R.string.not_available),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Walk Time",
+                        text = stringResource(R.string.walk_time),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -336,7 +338,7 @@ private fun BasicInfoCard(details: HutDetails) {
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "Bookable",
+                            text = stringResource(R.string.bookable),
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -391,7 +393,7 @@ private fun LocationCard(details: HutDetails) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Location",
+                text = stringResource(R.string.location),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -412,7 +414,7 @@ private fun LocationCard(details: HutDetails) {
                 // Map section
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Map",
+                    text = stringResource(R.string.map),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Medium
                 )
@@ -421,7 +423,7 @@ private fun LocationCard(details: HutDetails) {
                     context = context,
                     latitude = details.latitude,
                     longitude = details.longitude,
-                    name = details.name ?: "Hut"
+                    name = details.name ?: stringResource(R.string.hut)
                 )
             }
         }
@@ -500,7 +502,7 @@ private fun CategoryCard(category: String) {
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
-                    text = "Category",
+                    text = stringResource(R.string.category),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -526,7 +528,7 @@ private fun FacilitiesCard(facilities: List<String>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Facilities",
+                text = stringResource(R.string.facilities),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -577,7 +579,7 @@ private fun ProximityCard(proximity: String) {
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
-                    text = "Distance from Road End",
+                    text = stringResource(R.string.distance_from_road_end),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -603,7 +605,7 @@ private fun IntroductionCard(introduction: String) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "About",
+                text = stringResource(R.string.about),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -662,7 +664,7 @@ private fun ErrorScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
-            Text("Retry")
+            Text(stringResource(R.string.retry))
         }
     }
 }

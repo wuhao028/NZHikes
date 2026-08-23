@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.ui.res.stringResource
+import com.hao.ui.R
 
 object Spacing {
     val xs = 4.dp
@@ -150,7 +152,7 @@ fun InfoRow(
 
 @Composable
 fun LoadingState(
-    message: String = "Loading...",
+    message: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -163,7 +165,7 @@ fun LoadingState(
         )
         Spacer(modifier = Modifier.height(Spacing.md))
         Text(
-            text = message,
+            text = message ?: stringResource(R.string.loading),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -216,7 +218,7 @@ fun ErrorState(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Error",
+            text = stringResource(R.string.error_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.error

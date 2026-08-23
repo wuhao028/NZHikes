@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.hao.data.model.LocalTrack
 import com.hao.ui.HikeCardVertical
 
@@ -32,7 +33,7 @@ fun HikingHomePage(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Text("Day Hikes", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.day_hikes), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(8.dp))
         }
 
@@ -54,7 +55,7 @@ fun HikingHomePage(
         }
 
         item {
-            Text("Great Walks", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.great_walks), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(8.dp))
         }
 
@@ -76,5 +77,4 @@ fun HikingHomePage(
         }
     }
 }
-
 

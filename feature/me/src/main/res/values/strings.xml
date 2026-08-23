@@ -1,0 +1,21 @@
+<resources>
+    <string name="profile_title">Profile</string>
+    <string name="settings_title">Settings</string>
+    <string name="user_name">NZ Hikes User</string>
+    <string name="user_description">Explore the beautiful trails of New Zealand</string>
+    <string name="dark_mode_label">Dark Mode</string>
+    <string name="dark_mode_enabled">Enabled</string>
+    <string name="dark_mode_disabled">Disabled</string>
+    <string name="app_info_title">App Information</string>
+    <string name="app_display_name">NZ Hikes</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="app_description">Discover and explore hiking trails, campsites, and huts across New Zealand</string>
+    <plurals name="favourites_count">
+        <item quantity="one">%d Favourite</item>
+        <item quantity="other">%d Favourites</item>
+    </plurals>
+    <plurals name="completed_count">
+        <item quantity="one">%d Completed</item>
+        <item quantity="other">%d Completed</item>
+    </plurals>
+</resources>

@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.hao.data.model.LocalTrack
 
@@ -70,7 +71,7 @@ fun HikeCardVertical(
                 ) {
                     Icon(
                         imageVector = if (hike.isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                        contentDescription = "Favorite",
+                        contentDescription = stringResource(R.string.favorite),
                         tint = if (hike.isFavorite) Color.Red else Color.White
                     )
                 }
@@ -94,9 +95,9 @@ fun HikeCardVertical(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Difficulty: ${hike.difficulty}", style = MaterialTheme.typography.bodySmall)
-                Text("Distance: ${hike.distanceKm} km", style = MaterialTheme.typography.bodySmall)
-                Text("Duration: ${hike.duration}", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.hike_difficulty, hike.difficulty), style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.hike_distance, hike.distanceKm), style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.hike_duration, hike.duration), style = MaterialTheme.typography.bodySmall)
             }
         }
     }

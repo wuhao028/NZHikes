@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -75,7 +76,7 @@ fun TrackDetailScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = uiState.data?.name ?: "Track Details",
+                        text = uiState.data?.name ?: stringResource(R.string.track_details),
                         style = MaterialTheme.typography.titleMedium
                     ) 
                 },
@@ -83,7 +84,7 @@ fun TrackDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -113,7 +114,10 @@ fun TrackDetailScreen(
                         .padding(padding)
                         .padding(16.dp)
                 ) {
-                    Text(text = uiState.error ?: "Error", color = MaterialTheme.colorScheme.error)
+                    Text(
+                        text = uiState.error ?: stringResource(R.string.error_title),
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             }
 
@@ -156,13 +160,13 @@ fun TrackDetailContent(
         item {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = data.name ?: "Track Name",
+                    text = data.name ?: stringResource(R.string.track_name),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = data.locationString ?: "Location",
+                    text = data.locationString ?: stringResource(R.string.location),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -170,13 +174,13 @@ fun TrackDetailContent(
                     IconButton(onClick = { hike?.let { onToggleFavorite(it) } }) {
                         Icon(
                             imageVector = if (hike?.isFavorite == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Favorite"
+                            contentDescription = stringResource(R.string.favorite)
                         )
                     }
                     IconButton(onClick = { hike?.let { onToggleDone(it) } }) {
                         Icon(
                             imageVector = if (hike?.isDone == true) Icons.Filled.CheckCircle else Icons.Outlined.CheckCircle,
-                            contentDescription = "Mark as Done"
+                            contentDescription = stringResource(R.string.mark_as_done)
                         )
                     }
                 }
@@ -192,18 +196,19 @@ fun TrackDetailContent(
             ) {
                 InfoCard(
                     icon = Icons.Default.Hiking,
-                    label = "Distance",
-                    value = data.distance ?: "N/A"
+                    label = stringResource(R.string.distance),
+                    value = data.distance ?: stringResource(R.string.not_available)
                 )
                 InfoCard(
                     icon = Icons.Default.Schedule,
-                    label = "Duration",
-                    value = data.walkDuration ?: "N/A"
+                    label = stringResource(R.string.duration),
+                    value = data.walkDuration ?: stringResource(R.string.not_available)
                 )
                 InfoCard(
                     icon = Icons.Default.Terrain,
-                    label = "Difficulty",
-                    value = data.walkTrackCategory?.firstOrNull() ?: "N/A"
+                    label = stringResource(R.string.difficulty),
+                    value = data.walkTrackCategory?.firstOrNull()
+                        ?: stringResource(R.string.not_available)
                 )
             }
         }
@@ -211,13 +216,13 @@ fun TrackDetailContent(
         item {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "About this track",
+                    text = stringResource(R.string.about_track),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = data.introduction ?: "No introduction available.",
+                    text = data.introduction ?: stringResource(R.string.no_introduction),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -226,7 +231,7 @@ fun TrackDetailContent(
         item {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "Track Map",
+                    text = stringResource(R.string.track_map),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )

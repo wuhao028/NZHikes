@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.hao.data.model.Campsite
-import com.hao.ui.R
+import com.hao.ui.R as UiR
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -87,7 +88,7 @@ fun CampsiteDetailScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = uiState.details?.name ?: "Campsite Details",
+                        text = uiState.details?.name ?: stringResource(R.string.campsite_details),
                         style = MaterialTheme.typography.titleMedium
                     ) 
                 },
@@ -95,7 +96,7 @@ fun CampsiteDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -203,15 +204,15 @@ private fun HeroImageSection(details: CampsiteDetails) {
         if (!details.introductionThumbnail.isNullOrBlank()) {
             AsyncImage(
                 model = details.introductionThumbnail,
-                contentDescription = "Campsite image",
+                contentDescription = stringResource(R.string.campsite_image),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
         } else {
             // Fallback to camping image
             Image(
-                painter = painterResource(id = R.drawable.ic_camping),
-                contentDescription = "Campsite image",
+                painter = painterResource(id = UiR.drawable.ic_camping),
+                contentDescription = stringResource(R.string.campsite_image),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -233,7 +234,7 @@ private fun HeroImageSection(details: CampsiteDetails) {
                 .padding(16.dp)
         ) {
             Text(
-                text = details.name ?: "Campsite",
+                text = details.name ?: stringResource(R.string.campsite),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
@@ -274,7 +275,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Basic Information",
+                text = stringResource(R.string.basic_information),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -302,7 +303,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Powered Sites",
+                        text = stringResource(R.string.powered_sites),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -325,7 +326,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Unpowered Sites",
+                        text = stringResource(R.string.unpowered_sites),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -344,7 +345,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Dogs: ${details.dogsAllowed}",
+                        text = stringResource(R.string.dogs_allowed, details.dogsAllowed),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -360,7 +361,7 @@ private fun BasicInfoCard(details: CampsiteDetails) {
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "Bookable",
+                            text = stringResource(R.string.bookable),
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -415,7 +416,7 @@ private fun LocationCard(details: CampsiteDetails) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Location",
+                text = stringResource(R.string.location),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -436,7 +437,7 @@ private fun LocationCard(details: CampsiteDetails) {
                 // Map section
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Map",
+                    text = stringResource(R.string.map),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Medium
                 )
@@ -445,7 +446,7 @@ private fun LocationCard(details: CampsiteDetails) {
                     context = context,
                     latitude = details.latitude,
                     longitude = details.longitude,
-                    name = details.name ?: "Campsite"
+                    name = details.name ?: stringResource(R.string.campsite)
                 )
             }
         }
@@ -524,7 +525,7 @@ private fun CategoryCard(category: String) {
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
-                    text = "Category",
+                    text = stringResource(R.string.category),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -550,7 +551,7 @@ private fun FacilitiesCard(facilities: List<String>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Facilities",
+                text = stringResource(R.string.facilities),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -591,7 +592,7 @@ private fun AccessCard(access: List<String>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Access",
+                text = stringResource(R.string.access),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -632,7 +633,7 @@ private fun ActivitiesCard(activities: List<String>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Activities",
+                text = stringResource(R.string.activities),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -673,7 +674,7 @@ private fun IntroductionCard(introduction: String) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "About",
+                text = stringResource(R.string.about),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -732,7 +733,7 @@ private fun ErrorScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
-            Text("Retry")
+            Text(stringResource(R.string.retry))
         }
     }
 }
