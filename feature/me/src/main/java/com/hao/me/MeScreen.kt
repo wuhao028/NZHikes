@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.hao.data.repository.HikeRepository
 import com.hao.ui.theme.ThemeManager
@@ -122,9 +122,9 @@ class MeViewModel @Inject constructor(
 fun MeScreen() {
     val scrollState = rememberScrollState()
     val viewModel: MeViewModel = hiltViewModel()
-    val favoriteCount by viewModel.favoriteCount.collectAsState()
-    val doneCount by viewModel.doneCount.collectAsState()
-    val isDarkMode by viewModel.isDarkMode.collectAsState()
+    val favoriteCount by viewModel.favoriteCount.collectAsStateWithLifecycle()
+    val doneCount by viewModel.doneCount.collectAsStateWithLifecycle()
+    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
     
     Column(
         modifier = Modifier

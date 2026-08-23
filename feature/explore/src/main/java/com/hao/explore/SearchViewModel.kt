@@ -8,17 +8,20 @@ import com.hao.data.repository.HutRepository
 import com.hao.data.repository.TrackRepository
 import com.hao.explore.model.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 @HiltViewModel
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SearchViewModel @Inject constructor(
     private val trackRepository: TrackRepository,
     private val campsiteRepository: CampsiteRepository,
@@ -34,17 +37,21 @@ class SearchViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            launch { trackRepository.loadTracksFromAssets() }
-            launch { campsiteRepository.loadCampsitesFromAssets() }
-            launch { hutRepository.loadHutsFromAssets() }
+            when (savedStateHandle.get<Int>("searchType") ?: 0) {
+                0 -> trackRepository.loadTracksFromAssets()
+                1 -> campsiteRepository.loadCampsitesFromAssets()
+                2 -> hutRepository.loadHutsFromAssets()
+            }
         }
 
         viewModelScope.launch {
             searchQuery
                 .debounce(300)
+                .map(String::trim)
+                .distinctUntilChanged()
                 .flatMapLatest { query ->
                     if (query.isBlank()) {
-                        MutableStateFlow(emptyList())
+                        emptyFlow()
                     } else {
                         val searchType = savedStateHandle.get<Int>("searchType") ?: 0
                         when (searchType) {
@@ -52,21 +59,18 @@ class SearchViewModel @Inject constructor(
                                 .map { tracks ->
                                     tracks.map { SearchResult.TrackResult(it) }
                                 }
-                                .flowOn(Dispatchers.Default)
 
                             1 -> campsiteRepository.searchCampsites(query)
                                 .map { campsites ->
                                     campsites.map { SearchResult.CampsiteResult(it) }
                                 }
-                                .flowOn(Dispatchers.Default)
 
                             2 -> hutRepository.searchHuts(query)
                                 .map { huts ->
                                     huts.map { SearchResult.HutResult(it) }
                                 }
-                                .flowOn(Dispatchers.Default)
 
-                            else -> MutableStateFlow(emptyList())
+                            else -> emptyFlow()
                         }
                     }
                 }

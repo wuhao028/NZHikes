@@ -24,7 +24,7 @@ class TripsViewModel @Inject constructor(
         )
 
     val doneHikes: StateFlow<List<LocalTrack>> = hikeRepository.getDoneHikes()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun toggleFavorite(hike: LocalTrack) {
         viewModelScope.launch {

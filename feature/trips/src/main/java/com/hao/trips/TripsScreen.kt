@@ -10,7 +10,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.model.LocalTrack
 import com.hao.ui.HikeCardVertical
 
@@ -27,8 +27,8 @@ fun TripsScreen(
     onHikeClick: (LocalTrack) -> Unit,
     viewModel: TripsViewModel = hiltViewModel()
 ) {
-    val favoriteHikes by viewModel.favoriteHikes.collectAsState()
-    val doneHikes by viewModel.doneHikes.collectAsState()
+    val favoriteHikes by viewModel.favoriteHikes.collectAsStateWithLifecycle()
+    val doneHikes by viewModel.doneHikes.collectAsStateWithLifecycle()
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Favourite", "Done")
 
@@ -68,7 +68,7 @@ fun FavouriteScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(hikes) { hike ->
+        items(hikes, key = { it.assetId }) { hike ->
             // For now, onToggleFavorite is empty, as we might not want to unfavorite from this screen.
             // Or we could pass the viewModel's toggle function here.
             HikeCardVertical(
@@ -91,7 +91,7 @@ fun DoneScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(hikes) { hike ->
+        items(hikes, key = { it.assetId }) { hike ->
             HikeCardVertical(
                 hike = hike,
                 onToggleFavorite = onToggleFavorite,

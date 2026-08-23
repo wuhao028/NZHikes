@@ -1,6 +1,7 @@
 package com.hao.data.di
 
 import com.hao.data.remote.ApiService
+import com.hao.data.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -30,7 +31,10 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(@Named("doc_api_key") apiKey: String): OkHttpClient {
         val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        logging.setLevel(
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC
+            else HttpLoggingInterceptor.Level.NONE
+        )
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)

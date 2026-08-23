@@ -28,7 +28,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
@@ -54,7 +54,7 @@ fun HomeScreen(
     onHutClick: (Hut) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val tabs = listOf("Tracks", "Campsite", "Hut")
     val icons =
@@ -198,7 +198,7 @@ private fun CampsitesList(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(campsites) { campsite ->
+        items(campsites, key = { it.assetId }) { campsite ->
             CampsiteItem(campsite = campsite, onClick = { onCampsiteClick(campsite) })
         }
     }
@@ -215,7 +215,7 @@ private fun HutsList(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(huts) { hut ->
+        items(huts, key = { it.assetId }) { hut ->
             HutItem(hut = hut, onClick = { onHutClick(hut) })
         }
     }

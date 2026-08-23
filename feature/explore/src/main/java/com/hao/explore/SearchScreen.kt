@@ -34,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hao.data.data.model.RemoteTrack
 import com.hao.data.model.Campsite
 import com.hao.data.model.Hut
@@ -58,8 +58,8 @@ fun SearchScreen(
     onItemClick: (SearchResult) -> Unit,
     onCancel: () -> Unit = {}
 ) {
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val searchResults by viewModel.searchResults.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -170,7 +170,7 @@ fun SearchScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp)
                 ) {
-                    items(searchResults) { result ->
+                    items(searchResults, key = { result -> "${result::class.simpleName}:${result.assetId}" }) { result ->
                         when (result) {
                             is SearchResult.TrackResult -> {
                                 TrackSearchItem(
