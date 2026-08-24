@@ -118,4 +118,6 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test) {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
     }
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

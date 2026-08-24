@@ -111,4 +111,6 @@ dependencies {
 
     implementation(project(":core:data"))
 
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
